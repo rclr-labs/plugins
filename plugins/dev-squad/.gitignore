@@ -1,0 +1,6 @@
+# Advisory lock directory for dev-squad/state/queue.json (spec §5,
+# squad-queue-worker). This is transient, per-machine, per-process state:
+# if it were ever committed, cloning the repo would start with a
+# permanently "held" lock, and the stale-lock recovery path keys off
+# filesystem mtime, which git does not preserve across clones/checkouts.
+state/queue.json.lock

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "rclr-labs",
+  "description": "Marketplace da RCLR Labs para Claude Code: plugins de engenharia e QA usados nos engajamentos de consultoria.",
+  "owner": { "name": "RCLR Labs", "email": "rafael@rclr.com.br" },
+  "plugins": [
+    {
+      "name": "matriz-de-testes",
+      "source": "./plugins/matriz-de-testes",
+      "description": "Corpus grande de documentos -> testes criticos -> Matriz de Cobertura, Ciclo de Execucao e rastreabilidade HTML auditavel."
+    },
+    {
+      "name": "kit-mvp",
+      "source": "./plugins/kit-mvp",
+      "description": "Conduz da ideia ao MVP entregavel em Laravel + MySQL, em fatias verticais testadas, gerando o CLAUDE.md do projeto e a documentacao de handover."
+    },
+    {
+      "name": "dev-squad",
+      "source": "./plugins/dev-squad",
+      "description": "Um time de desenvolvimento (Product Owner, Tech Lead, Devs, QA, Code Reviewer, Release Manager, agente de seguranca pre-prod e monitor de manutencao) que conduz features pelos estagios Plan-Design-Build-Test-Deploy-Maintain."
+    }
+  ]
+}

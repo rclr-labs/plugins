@@ -1,0 +1,8 @@
+{
+  "name": "matriz-de-testes",
+  "version": "1.0.0",
+  "description": "Analisa um corpus grande de documentos (requisitos, historias, atas, especificacoes), determina os testes criticos por rubrica objetiva e tecnicas de teste (pairwise, particao de equivalencia, transicao de estado, tabela de decisao) e gera Matriz de Cobertura, Ciclo de Execucao e um relatorio HTML de rastreabilidade auditavel.",
+  "author": { "name": "RCLR Labs", "email": "rafael@rclr.com.br" },
+  "repository": "https://github.com/rclr-labs/plugins",
+  "keywords": ["qa", "testes", "matriz-de-cobertura", "pairwise", "rastreabilidade", "consultoria"]
+}

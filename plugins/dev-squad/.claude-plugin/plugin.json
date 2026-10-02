@@ -1,0 +1,16 @@
+{
+  "name": "dev-squad",
+  "version": "0.1.3",
+  "description": "A development squad (Product Owner, Tech Lead, Devs, QA, Code Reviewer, Release Manager, a pre-prod Security Agent, and a Maintain monitor) that runs features through the Plan-Design-Build-Test-Deploy-Maintain SDLC stages.",
+  "author": {
+    "name": "RCLR Labs",
+    "email": "rafael@rclr.com.br"
+  },
+  "keywords": [
+    "sdlc",
+    "agile",
+    "multi-agent",
+    "security"
+  ],
+  "repository": "https://github.com/rclr-labs/plugins"
+}

@@ -1,0 +1,18 @@
+{
+  "name": "kit-mvp",
+  "version": "1.0.0",
+  "description": "Da ideia ao MVP funcional em Laravel + MySQL com Claude Code: escopo cortado, modelo de dados, construcao em fatias verticais testadas e handover que o time de desenvolvimento adota em vez de reescrever.",
+  "author": {
+    "name": "RCLR Labs",
+    "email": "rafael@rclr.com.br"
+  },
+  "repository": "https://github.com/rclr-labs/plugins",
+  "keywords": [
+    "laravel",
+    "php",
+    "mysql",
+    "mvp",
+    "prototipagem",
+    "handover"
+  ]
+}

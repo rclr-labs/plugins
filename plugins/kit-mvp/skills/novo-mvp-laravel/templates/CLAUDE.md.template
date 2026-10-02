@@ -1,0 +1,48 @@
+# [NOME DO MVP]
+
+MVP em validação. Objetivo e escopo: ver `docs/mvp/01-escopo.md`.
+Estado da construção: ver `docs/mvp/03-fatias.md` — **leia no início de cada sessão.**
+
+## Stack
+
+Laravel [VERSAO_LIDA_DO_COMPOSER_JSON] · PHP [VERSAO_LIDA] · MySQL · [FRONT_LIDO_DO_PACKAGE_JSON]
+
+## Comandos
+
+```bash
+php artisan test     # rode ANTES de dizer que algo está pronto
+php artisan serve    # sobe o projeto em http://localhost:8000
+npm run dev          # compila o front em modo de desenvolvimento
+```
+
+## Convenções
+
+- **Validação:** sempre em Form Request. Nunca `$request->all()` num `create()` ou `update()` — use `$request->validated()` ou campos explícitos.
+- **Autorização:** toda rota que toca dado de outro usuário passa por Policy. MVP com login = MVP com Policy. Autorização adicionada depois exige reler cada controller; nascer com ela custa ~10 linhas por entidade.
+- **Controller fino:** regra de negócio com mais de ~15 linhas, ou usada em dois lugares, vira classe em `app/Actions/`.
+- **Idioma:** domínio em português **sem acento e sem cedilha** em identificador — classe `Endereco`, tabela `enderecos`, coluna `descricao`. Acento só em texto que o usuário lê.
+- **Todo model declara `protected $table` explicitamente.** O Laravel pluraliza em inglês (`Papel` viraria `papels`); duas linhas eliminam uma classe inteira de bug silencioso.
+- **O que o Laravel trouxe fica como está:** `id`, `created_at`, `updated_at`, a tabela `users` e as colunas `email`/`password` do scaffolding de autenticação. Renomear isso briga com o framework e custa mais do que vale.
+- **Listagem:** sempre `paginate()`, nunca `all()`. Relação acessada dentro de loop → `with()` no controller.
+- **Config:** `config('x.y')` no código; `env()` só dentro de `config/`. `env()` fora de `config/` funciona em desenvolvimento e retorna `null` em produção assim que alguém roda `config:cache`.
+
+## Testes (obrigatório por fatia)
+
+Onde o teste mora depende **do que a classe toca**:
+
+- **Cálculo puro** (total, desconto, prazo, saldo) → `tests/Unit/`, estendendo `PHPUnit\Framework\TestCase`, sem banco.
+- **Qualquer coisa que toca o banco** (`create`, query, relação) → `tests/Feature/`, estendendo `Tests\TestCase` com `RefreshDatabase`.
+  **NUNCA** coloque código que usa Eloquent em `tests/Unit/` com a base do PHPUnit: falha com `A facade root has not been set`.
+- Toda classe em `app/Actions/` tem teste, na pasta correspondente ao que ela faz.
+- Toda fatia → 1 feature test: caminho feliz + 1 erro de validação.
+- **Escreva Actions separando cálculo de persistência:** a conta num método puro, a gravação num método que só grava. Isso é o que torna a regra de teste barata em vez de imposto.
+- **Portão:** `php artisan test` verde antes de fechar a fatia.
+
+## Guard rails — o que NÃO fazer sem me perguntar
+
+- Não editar nem criar `.env`, e nunca imprimir segredo. Precisa de variável nova? Peça.
+- Não rodar `migrate:fresh`, `migrate:refresh` ou `db:wipe` depois que houver dado real. Só migration nova.
+- Não instalar pacote Composer ou NPM sem perguntar.
+- Não refatorar o que não faz parte da fatia atual.
+- Não começar a próxima fatia antes de a atual passar no teste **e** abrir no navegador.
+- Antes de afirmar que terminou: rode `php artisan test` e mostre a saída.

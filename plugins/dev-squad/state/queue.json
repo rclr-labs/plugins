@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "staleness_window_minutes": 90,
+  "allowed_repo_roots": [],
+  "jobs": []
+}

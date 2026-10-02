@@ -1,0 +1,29 @@
+{
+  "description": "Blocks git commits whose staged diff looks like it contains a credential, and emits an OpenTelemetry-style span per tool use when DEV_SQUAD_TELEMETRY=1.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/hook-secret-scan.sh\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/hook-otel-span.sh\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

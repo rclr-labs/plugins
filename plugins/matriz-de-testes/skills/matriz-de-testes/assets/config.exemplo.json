@@ -1,0 +1,39 @@
+{
+  "cliente": "Cliente Exemplo Ltda.",
+  "sistema": "METEO — Sistema de Meteorologia",
+  "modulos": [
+    "CONSULTA",
+    "FILTRO",
+    "VISUAL"
+  ],
+  "prefixos": {
+    "CONSULTA — Busca por identificador": "CON",
+    "CONSULTA — Atendimento Simultâneo": "ATE",
+    "FILTRO — Limiar": "FIL",
+    "VISUAL — Plotagens": "VIS"
+  },
+  "ambientes": [
+    "Desenvolvimento",
+    "Homologação",
+    "Homologação Cliente",
+    "Produção"
+  ],
+  "padrao_ct_id": "{PREFIXO}-CT{NNN}",
+  "ferramenta_gestao": "a ferramenta de gestão",
+  "autor": "RCLR Labs",
+  "data_referencia": "2026-10-01",
+  "forca_cobertura": 2,
+  "teto_cts_por_funcionalidade": 40,
+  "smoke_apenas_classe_valida": true,
+  "recomendar_automacao": false,
+  "_comentarios": {
+    "prefixos": "Definido uma vez por funcionalidade e NUNCA muda (matriz de referência secao 3). A numeracao e sequencial e nao reinicia em novas historias. O validador bloqueia mudanca de prefixo contra o baseline.",
+    "padrao_ct_id": "{PREFIXO} e {NNN} sao os unicos placeholders reconhecidos. {NNN} = sequencial de 3 digitos.",
+    "ambientes": "A ordem importa: render_ciclo.py usa o primeiro para Funcional, o segundo para Regressao e o ultimo para Smoke.",
+    "forca_cobertura": "2 = pairwise (todos os pares). 3 = todas as triplas, muito mais CTs.",
+    "teto_cts_por_funcionalidade": "AVISO, nunca truncagem. Cortar linhas de um array pairwise destruiria a cobertura que o validador prova.",
+    "smoke_apenas_classe_valida": "Em particao de equivalencia, so a classe 'valido' entra no smoke; invalido/limite/branco sao 'tratamento de excecao' e 'variacao do fluxo principal' (Secao 2 = Media). false faz toda classe herdar a prioridade do achado.",
+    "prioridade_pairwise": "Um achado Alta nao torna Alta todas as linhas do array: apenas o subconjunto com cobertura t=1 (cada valor de cada parametro ao menos uma vez) fica Alta @smoke; as combinacoes restantes viram Media @regressao. Mantem o smoke enxuto sem perder a cobertura pairwise, que fica integral na regressao.",
+    "recomendar_automacao": "false por default. true liga a recomendacao de automacao: acrescenta a 9a coluna 'Automacao' na Matriz, a tag @automatizavel na coluna Tipo de Testes, e a secao 'Backlog de automacao' no rastreabilidade.html. Fica desligado por default porque o conjunto de colunas da Matriz e varrido por script via API na ferramenta de gestão — acrescentar coluna e mudanca de interface. Ver references/automacao.md."
+  }
+}
