@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skill de Validação de Requisitos com o Cliente</title>
+<style>
+:root{--ink:#0f172a;--muted:#54637a;--line:#e3e8ef;--bg:#f6f8fb;--card:#fff;--accent:#0f766e;--accent-soft:#e6f4f1;--warn:#b45309;--warn-soft:#fef3c7;--danger:#b42318;--danger-soft:#fee4e2;--ok:#15803d;--ok-soft:#dcfce7;--radius:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header.hero{background:linear-gradient(135deg,#0b3b39 0%,#0f766e 55%,#115e59 100%);color:#fff;padding:56px 0 44px}
+.hero .kicker{text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:700;opacity:.85;margin:0 0 12px}
+.hero h1{margin:0 0 14px;font-size:clamp(26px,4vw,42px);line-height:1.15;letter-spacing:-.02em}
+.hero p.lead{margin:0 0 22px;font-size:clamp(15px,1.6vw,19px);max-width:78ch;opacity:.95}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px}
+.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600}
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.toc .wrap{display:flex;gap:6px;align-items:center;overflow-x:auto;padding:10px 24px}
+nav.toc a{white-space:nowrap;text-decoration:none;color:var(--muted);font-size:13px;font-weight:600;padding:7px 11px;border-radius:999px}
+nav.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+nav.toc .spacer{flex:1}
+.btn{cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:#fff;font:inherit;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px}
+.btn.ghost{background:#fff;color:var(--accent)}
+main{padding:8px 0 64px}
+section{padding:44px 0 8px;border-top:1px solid var(--line)}
+section:first-of-type{border-top:0}
+h2{font-size:clamp(20px,2.6vw,28px);margin:0 0 6px;letter-spacing:-.01em}
+h2 .num{color:var(--accent);font-variant-numeric:tabular-nums;margin-right:10px}
+.sub{color:var(--muted);margin:0 0 22px;max-width:80ch}
+h3{font-size:17px;margin:26px 0 10px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px 16px}
+.card h4{margin:0 0 8px;font-size:15px}
+.card p{margin:0;color:var(--muted);font-size:14.5px}
+.card .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:3px 8px;margin-bottom:10px}
+ol.flow{list-style:none;counter-reset:step;margin:0;padding:0}
+ol.flow>li{counter-increment:step;position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px 16px 62px;margin-bottom:12px}
+ol.flow>li::before{content:counter(step);position:absolute;left:16px;top:16px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+ol.flow h4{margin:0 0 4px;font-size:16px}
+ol.flow p{margin:0 0 8px;color:var(--muted);font-size:14.5px}
+.io{display:flex;flex-wrap:wrap;gap:8px;font-size:12.5px}
+.io span{border:1px solid var(--line);border-radius:8px;padding:4px 9px;background:#fbfcfe;color:var(--muted)}
+.io span b{color:var(--ink);font-weight:700}
+code{background:#eef2f7;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:#0f172a;color:#e2e8f0;border-radius:12px;padding:16px 18px;overflow:auto;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre .c{color:#94a3b8}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f1f5f9;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+.num-col{font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip{display:inline-block;font-size:12.5px;font-weight:600;border-radius:999px;padding:4px 10px;border:1px solid var(--line);background:#fff;color:var(--muted);margin:0 6px 6px 0}
+.chip.e{background:var(--danger-soft);color:var(--danger);border-color:#fbc9c4}
+.chip.i{background:var(--warn-soft);color:var(--warn);border-color:#fde68a}
+.chip.t{background:#eef2f7;color:var(--muted)}
+.callout{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;padding:16px 18px;margin:18px 0}
+.callout.danger{border-color:var(--danger);background:var(--danger-soft)}
+.callout.warn{border-color:var(--warn);background:var(--warn-soft)}
+.callout h4{margin:0 0 6px;font-size:15px}
+.callout p{margin:0;font-size:14.5px}
+.kpis{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin:18px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.kpi b{display:block;font-size:30px;line-height:1.1;letter-spacing:-.02em;color:var(--accent)}
+.kpi small{display:block;color:var(--muted);font-size:12.5px;margin-top:4px}
+.kpi.bad b{color:var(--danger)}
+.files{font:13.5px/1.9 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;overflow:auto}
+.files .who{font-family:inherit;font-size:11.5px;font-weight:700;border-radius:6px;padding:1px 7px;margin-left:8px}
+.who.p{background:var(--ok-soft);color:var(--ok)}
+.who.l{background:var(--warn-soft);color:var(--warn)}
+.who.x{background:var(--danger-soft);color:var(--danger)}
+ul.check{list-style:none;padding:0;margin:0}
+ul.check li{position:relative;padding:6px 0 6px 28px;color:var(--muted);font-size:14.5px}
+ul.check li::before{content:"";position:absolute;left:6px;top:12px;width:9px;height:9px;border-radius:3px;background:var(--accent)}
+.quote{border-left:3px solid var(--line);padding:4px 0 4px 14px;color:var(--muted);font-style:italic;font-size:14px}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:13.5px}
+/* modo apresentação */
+body.presenting{background:#0b1220;overflow:hidden}
+body.presenting .toc,body.presenting footer,body.presenting .noprint{display:none!important}
+body.presenting main,body.presenting .hero{display:none}
+body.presenting .hero.slide,body.presenting main>.wrap{display:none}
+body.presenting .stage{display:block!important}
+.stage{display:none;position:fixed;inset:0;overflow:auto;background:var(--bg)}
+.stage .slideinner{max-width:1080px;margin:0 auto;padding:48px 32px 96px}
+.stage .heroblock{background:linear-gradient(135deg,#0b3b39,#0f766e);color:#fff;padding:40px 34px;border-radius:16px;margin-bottom:26px}
+.stage .heroblock h1{margin:0 0 10px;font-size:34px}
+.stage .heroblock p{margin:0;opacity:.95}
+.hud{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;justify-content:center;padding:10px;background:rgba(11,18,32,.92);color:#cbd5e1;font-size:13px;z-index:60}
+.hud button{cursor:pointer;background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:8px;font:inherit;padding:6px 12px}
+.hud button:hover{background:#334155}
+.hud .pos{font-variant-numeric:tabular-nums;min-width:64px;text-align:center}
+@media print{nav.toc,.btn,.hud{display:none!important}body{background:#fff}section{page-break-inside:avoid}header.hero{background:#0f766e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.card,table{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="hero slide" id="topo" data-title="Capa">
+  <div class="wrap">
+    <p class="kicker">RCLR · Biblioteca de skills</p>
+    <h1>Skill de Validação de Requisitos com o Cliente</h1>
+    <p class="lead">Um método executável que leva o time do <strong>chamado do cliente</strong> até o <strong>requisito validado</strong> — preparando quem conduz a reunião, cobrando cobertura com evidência e qualificando o documento com critério. Objetivo maior: <strong>desenvolver o time e reduzir a dependência dos dois líderes</strong>.</p>
+    <div class="meta">
+      <span class="pill">5 fases · 6 subcomandos</span>
+      <span class="pill">Checklist de 62 perguntas</span>
+      <span class="pill">14 eixos de efeitos colaterais</span>
+      <span class="pill">Nota 0–100 com evidência</span>
+      <span class="pill">Agnóstica de ferramenta</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc noprint">
+  <div class="wrap">
+    <a href="#problema">O problema</a>
+    <a href="#fases">As 5 fases</a>
+    <a href="#entradas">Entradas</a>
+    <a href="#arquivos">Artefatos</a>
+    <a href="#checklist">Checklist</a>
+    <a href="#impacto">Efeitos colaterais</a>
+    <a href="#qualificacao">Qualificação</a>
+    <a href="#sigilo">Confidencialidade</a>
+    <a href="#prova">Prova</a>
+    <a href="#uso">Como usar</a>
+    <a href="#medicao">Medição</a>
+    <a href="#proximos">Próximos passos</a>
+    <span class="spacer"></span>
+    <button class="btn ghost" id="startPres">▶ Modo apresentação</button>
+  </div>
+</nav>
+
+<main>
+<div class="wrap">
+
+<section class="slide" id="problema" data-title="O problema">
+  <h2><span class="num">01</span>O problema que a skill ataca</h2>
+  <p class="sub">Hoje, transformar um chamado em requisito validado depende de duas pessoas. O conhecimento existe — mas está na cabeça dos líderes, não no processo.</p>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Dependência</span><h4>Dois líderes no caminho crítico</h4><p>Preparação, condução, revisão e reescrita passam pelos mesmos dois nomes. Férias ou pico de demanda travam a fila.</p></div>
+    <div class="card"><span class="tag">Qualidade</span><h4>O requisito chega incompleto</h4><p>Pedido do cliente tratado como requisito, sem caso-limite, sem critério de aceite, sem dono para o que ficou em aberto.</p></div>
+    <div class="card"><span class="tag">Risco</span><h4>O efeito colateral aparece tarde</h4><p>O número que muda o relatório contratual, o dado pessoal que sai na exportação, o contrato antigo que some da conta — descobertos no desenvolvimento.</p></div>
+  </div>
+  <div class="callout"><h4>O que mudamos</h4><p>Em vez de o líder revisar no fim, a qualidade é <strong>definida antes</strong> (perguntas certas), <strong>cobrada com evidência</strong> (o que a reunião realmente cobriu) e <strong>medida com critério</strong> (nota + feedback que ensina). O líder entra para calibrar, não para refazer.</p></div>
+</section>
+
+<section class="slide" id="fases" data-title="As 5 fases">
+  <h2><span class="num">02</span>As 5 fases, do chamado ao feedback</h2>
+  <p class="sub">Cada fase tem entrada, saída e critério de pronto. O usuário pede a fase pelo nome — ou pede o ciclo completo.</p>
+  <ol class="flow">
+    <li><h4>Preparar — <code>preparar</code></h4><p>Lê o chamado e a documentação do sistema, separa pedido × necessidade × desejo × restrição, roda a varredura de impactos e entrega o dossiê com as perguntas priorizadas (P1 bloqueante · P2 importante · P3 desejável).</p><div class="io"><span><b>Entra:</b> chamado + documentação + checklist</span><span><b>Sai:</b> 01_dossie_pre_reuniao.md</span></div></li>
+    <li><h4>Esqueleto — <code>esqueleto</code></h4><p>Monta o documento que o participante vai preencher na reunião: seções prontas, fatos já marcados e <code>❓ TBD</code> no que só o cliente responde. Cada requisito nasce com critério de aceite e rastreabilidade.</p><div class="io"><span><b>Entra:</b> dossiê</span><span><b>Sai:</b> 02_esqueleto_requisitos.md</span></div></li>
+    <li><h4>Cobertura — <code>avaliar</code></h4><p>Compara a transcrição com os pontos planejados <strong>e</strong> com a checklist. Cada item recebe status com <strong>trecho citado</strong>: coberto, parcial, não coberto, emergente ou não verificável. Sem evidência, não conta.</p><div class="io"><span><b>Entra:</b> transcrição + dossiê + checklist</span><span><b>Sai:</b> 03_cobertura_reuniao.md</span></div></li>
+    <li><h4>Qualificação — <code>qualificar</code></h4><p>Aplica a rubrica ao documento do participante: nota 0–5 em 6 critérios ponderados, nota global 0–100 e feedback estruturado — o que está bom, o que está ruim, o que faltou, o que não foi explorado e o plano da próxima.</p><div class="io"><span><b>Entra:</b> documento do participante</span><span><b>Sai:</b> 04 (líder) + 05 (participante)</span></div></li>
+    <li><h4>Documento ideal — <code>ideal</code></h4><p>O padrão sênior por escrito, <strong>só para o mentor</strong>: critérios testáveis, exceções, efeitos colaterais com mitigação e as perguntas que ainda dependem do cliente — com proposta de resposta.</p><div class="io"><span><b>Entra:</b> tudo acima</span><span><b>Sai:</b> _interno/06_documento_ideal.md</span></div></li>
+  </ol>
+  <p class="sub" style="margin-top:14px">O subcomando <code>completo</code> encadeia tudo o que já tem material disponível. Se o usuário não disser a fase, a skill deduz pelo que ele trouxe e <strong>confirma antes de gerar</strong>.</p>
+</section>
+
+<section class="slide" id="entradas" data-title="Entradas">
+  <h2><span class="num">03</span>O que a skill precisa — e como se fornece</h2>
+  <p class="sub">Não há integração, login ou instalação: a entrada é <strong>texto e arquivo</strong>. O usuário monta a pasta do caso, coloca o material em <code>00_entrada/</code> e pede a fase. A skill lê e copia — <strong>nunca edita</strong> o material bruto, porque ele é a prova do que o cliente disse.</p>
+  <table>
+    <thead><tr><th>Fase</th><th>Precisa</th><th>Melhora muito</th><th>Se faltar</th></tr></thead>
+    <tbody>
+      <tr><td><code>preparar</code></td><td>O chamado (texto, e-mail, print, link ou ID)</td><td>Documentação do sistema + checklist do time</td><td>Sem chamado, faz 3 perguntas de escopo antes de gerar; sem documentação, marca tudo como "não verificado"</td></tr>
+      <tr><td><code>esqueleto</code></td><td>— (usa o dossiê)</td><td>Anexos que o cliente mandou (planilha, print)</td><td>Gera a partir das mesmas entradas da fase 1</td></tr>
+      <tr><td><code>avaliar</code></td><td>A transcrição da reunião</td><td>Ata/anotações e lista de participantes</td><td><strong>Para e explica o que falta</strong> — nunca infere a reunião</td></tr>
+      <tr><td><code>qualificar</code></td><td>O documento escrito pelo participante</td><td>Dossiê e cobertura, para cruzar</td><td>Sem o documento, roda só a cobertura</td></tr>
+      <tr><td><code>ideal</code></td><td>O que existir acima</td><td>Sessão de líder (nunca com o participante)</td><td>Gera hipótese antes da reunião e consolida depois</td></tr>
+    </tbody>
+  </table>
+  <h3>Três formas de fornecer</h3>
+  <div class="grid g3">
+    <div class="card"><h4>1 · Pasta do caso</h4><p><em>Recomendado.</em> Cria <code>validacao-clientes/&lt;data&gt;-&lt;chamado&gt;/00_entrada/</code> e salva com nomes previsíveis: <code>chamado.md</code>, <code>documentacao-*.md</code>, <code>checklist-do-time.md</code>, <code>transcricao.md</code>, <code>documento-participante.md</code>.</p></div>
+    <div class="card"><h4>2 · Colar no chat</h4><p>Cola o chamado ou a transcrição na conversa e pede a fase. A skill salva em <code>00_entrada/</code> para manter o rastro do que foi dito.</p></div>
+    <div class="card"><h4>3 · Apontar o caminho</h4><p>"A documentação está em <code>~/Downloads/wiki.pdf</code>". A skill lê de onde estiver e copia para a pasta do caso.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h4>Formatos</h4><p><strong>Ideais:</strong> <code>.md</code>, <code>.txt</code>, <code>.csv</code>, <code>.vtt</code>, <code>.srt</code> (legenda da reunião, com timestamp). <strong>Funcionam:</strong> <code>.docx</code>, <code>.pdf</code> (escaneado não), <code>.xlsx</code>, print. <strong>Precisa converter:</strong> áudio e vídeo — use a transcrição que a ferramenta da reunião já gera.</p></div>
+    <div class="card"><h4>Dados sensíveis</h4><p>Transcrição e documentação trazem nome, CPF e cláusula contratual. A pasta do caso fica em acesso restrito, <code>00_entrada/</code> e <code>_interno/</code> nunca são entregues, e ao citar trechos a skill usa o mínimo necessário e mascara dado pessoal.</p></div>
+  </div>
+</section>
+
+<section class="slide" id="arquivos" data-title="Artefatos">
+  <h2><span class="num">04</span>O que a skill produz — e quem pode ver o quê</h2>
+  <p class="sub">Um caso = uma pasta. O material bruto do cliente nunca é editado; cada artefato tem um destinatário explícito.</p>
+  <div class="files">
+validacao-clientes/&lt;AAAA-MM-DD&gt;-&lt;slug-do-chamado&gt;/<br>
+├── 00_entrada/ <span class="c"># chamado, documentação, checklist, transcrição, documento do participante</span><br>
+├── 01_dossie_pre_reuniao.md <span class="who p">→ participante</span><br>
+├── 02_esqueleto_requisitos.md <span class="who p">→ participante</span><br>
+├── 03_cobertura_reuniao.md <span class="who l">→ líder</span><br>
+├── 04_qualificacao_documento.md <span class="who l">→ líder</span><br>
+├── 05_feedback_participante.md <span class="who p">→ participante</span><br>
+└── _interno/06_documento_ideal.md <span class="who x">→ ninguém além do mentor</span>
+  </div>
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card"><h4>O que o participante recebe</h4><p>O dossiê com as perguntas, o esqueleto para preencher e o feedback do seu documento. Tudo o que ele precisa para conduzir e melhorar — nada que entregue a resposta pronta.</p></div>
+    <div class="card"><h4>O que fica com o líder</h4><p>O relatório de cobertura, a qualificação com notas e evidências e o documento ideal. É a base para calibrar o time sem refazer o trabalho.</p></div>
+  </div>
+</section>
+
+<section class="slide" id="checklist" data-title="Checklist de entrevista">
+  <h2><span class="num">05</span>A checklist do time sênior, virando processo</h2>
+  <p class="sub">A experiência dos seniores foi destilada em 14 blocos e 62 perguntas-âncora. Cada uma diz o que conta como <strong>resposta boa</strong> e qual é o <strong>sinal de alerta</strong>. A checklist do time, quando existir, <strong>substitui</strong> esta — a embutida vira complemento.</p>
+  <div style="margin-bottom:14px">
+    <span class="chip e">[E] essencial · 45</span><span class="chip i">[I] importante · 12</span><span class="chip t">[T] se houver tempo · 5</span>
+  </div>
+  <div class="grid g4">
+    <div class="card"><h4>A · Abertura</h4><p>Objetivo, decisor, motivador, prazo.</p></div>
+    <div class="card"><h4>B · Problema e dor</h4><p>Processo atual, onde dói, frequência, custo de não fazer.</p></div>
+    <div class="card"><h4>C · Pedido e desejo</h4><p>O que quer, por que assim, alternativas já tentadas.</p></div>
+    <div class="card"><h4>D · Fluxo futuro</h4><p>Passo a passo, gatilho, quem faz o quê, transição.</p></div>
+    <div class="card"><h4>E · Dados e regras</h4><p>Origem, volume, regra de decisão, dado pessoal, histórico.</p></div>
+    <div class="card"><h4>F · Integrações</h4><p>Sistemas, dependências externas, contratos de API.</p></div>
+    <div class="card"><h4>G · Exceções</h4><p>Dado vazio, duplicado, erro, permissão, caso-limite.</p></div>
+    <div class="card"><h4>H · Impactos</h4><p>Quem mais usa, relatórios, faturamento, contrato, o que quebra.</p></div>
+    <div class="card"><h4>I · Não-funcionais</h4><p>Volume, janela crítica, idioma, retenção.</p></div>
+    <div class="card"><h4>J · Operação</h4><p>Quem opera, monitoramento, rollback, suporte.</p></div>
+    <div class="card"><h4>K · Sucesso</h4><p>Como sabe que deu certo, meta, quem valida.</p></div>
+    <div class="card"><h4>L · Escopo</h4><p>Metade se der, o que fica fora, quem aprova mudança.</p></div>
+    <div class="card"><h4>M · Riscos</h4><p>Premissas, maior risco, restrições, dependências.</p></div>
+    <div class="card"><h4>N · Encerramento</h4><p>O que ficou aberto, dono, prazo, recapitulação.</p></div>
+  </div>
+  <h3>Como isso soa numa pergunta real</h3>
+  <table>
+    <thead><tr><th>Pergunta-âncora</th><th>Resposta boa</th><th>Sinal de alerta</th></tr></thead>
+    <tbody>
+      <tr><td>Onde exatamente dói? Me mostra um caso real que deu errado.</td><td>Caso concreto com data e impacto</td><td>Dor descrita em abstrato</td></tr>
+      <tr><td>Algum relatório, faturamento ou indicador muda por causa disso?</td><td>Sim/não com relatório nomeado</td><td>"Acho que não"</td></tr>
+      <tr><td>O que acontece quando o dado não existe ou está incompleto?</td><td>Comportamento definido</td><td>"Isso não acontece"</td></tr>
+      <tr><td>Se só der para fazer metade, qual metade?</td><td>Prioridade declarada</td><td>"Tudo é prioridade"</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide" id="impacto" data-title="Efeitos colaterais">
+  <h2><span class="num">06</span>Efeitos colaterais: varredura obrigatória em 14 eixos</h2>
+  <p class="sub">O ponto mais caro de um pedido não é o que ele pede — é o que ele quebra em volta. A skill percorre os 14 eixos <strong>um a um</strong> e registra cada um como atingido ou não atingido, com gravidade e pergunta de confirmação. Eixo não registrado = varredura não feita.</p>
+  <div>
+    <span class="chip">1 Dados</span><span class="chip">2 Fluxos existentes</span><span class="chip">3 Integrações</span><span class="chip">4 Permissões</span><span class="chip">5 Relatórios e indicadores</span><span class="chip">6 Outros clientes e contratos</span><span class="chip">7 Privacidade e regulação</span><span class="chip">8 Retrocompatibilidade</span><span class="chip">9 Operação e suporte</span><span class="chip">10 Volume, performance e custo</span><span class="chip">11 Experiência</span><span class="chip">12 Segurança</span><span class="chip">13 Comercial e faturamento</span><span class="chip">14 Manutenção</span>
+  </div>
+  <div class="callout warn"><h4>Exemplo de achado (caso simulado)</h4><p>O relatório de SLA pedido pela área de contratos alimenta um <strong>relatório mensal enviado ao cliente</strong>, com <strong>multa prevista em contrato</strong>. Mudar a forma de calcular o número teria efeito jurídico — e isso estava fora do chamado. Na reunião, o cliente <em>mencionou</em> o assunto; a pergunta não foi feita. É exatamente esse tipo de lacuna que a varredura evita.</p></div>
+</section>
+
+<section class="slide" id="qualificacao" data-title="Qualificação">
+  <h2><span class="num">07</span>Qualificar: quanto de qualidade tem o documento</h2>
+  <p class="sub">Nota 0–5 em seis critérios ponderados, com evidência em cada nota. A nota global (0–100) é a média ponderada — e vem sempre acompanhada do que fazer diferente.</p>
+  <table>
+    <thead><tr><th>Critério</th><th class="num-col">Peso</th><th>O que mede</th></tr></thead>
+    <tbody>
+      <tr><td>C1 · Completude e aderência ao pedido</td><td class="num-col">20</td><td>Responde ao chamado inteiro — e ao problema real, não só à solução pedida</td></tr>
+      <tr><td>C2 · Clareza e ausência de ambiguidade</td><td class="num-col">15</td><td>Dá para ler e saber o que fazer, sem interpretar</td></tr>
+      <tr><td>C3 · Testabilidade (critérios de aceite)</td><td class="num-col">20</td><td>Cada requisito verificável por um teste objetivo</td></tr>
+      <tr><td>C4 · Riscos, efeitos colaterais e não-funcionais</td><td class="num-col">15</td><td>Impactos em volta, exceções, volume, segurança, operação</td></tr>
+      <tr><td>C5 · Rastreabilidade e evidências</td><td class="num-col">15</td><td>Requisito → origem → quem decidiu</td></tr>
+      <tr><td>C6 · Estrutura, escopo e fora de escopo</td><td class="num-col">15</td><td>Organização, escopo declarado, premissas, questões abertas</td></tr>
+    </tbody>
+  </table>
+  <h3>Faixas</h3>
+  <div class="grid g4">
+    <div class="card"><h4>0–39 · Insuficiente</h4><p>Não é requisito ainda: é anotação de reunião.</p></div>
+    <div class="card"><h4>40–59 · Frágil</h4><p>Entregar assim gera retrabalho.</p></div>
+    <div class="card"><h4>60–74 · Aceitável</h4><p>Serve para começar com acompanhamento.</p></div>
+    <div class="card"><h4>75–89 · Bom</h4><p>Revisão leve antes do desenvolvimento.</p></div>
+    <div class="card"><h4>90–100 · Pronto</h4><p>Pode ir para o time, sem P1 em aberto.</p></div>
+  </div>
+  <h3>O feedback que devolve desenvolvimento, não dependência</h3>
+  <div class="grid g2">
+    <div class="card"><h4>Lacuna de método</h4><p>Não escreveu critério de aceite, juntou três assuntos num requisito. <strong>Ensina agora</strong> — com o critério e o exemplo.</p></div>
+    <div class="card"><h4>Lacuna de conteúdo</h4><p>Falta o volume real, o efeito contratual. <strong>Não entrega a resposta</strong>: devolve como pergunta ao cliente, com dono e prazo.</p></div>
+  </div>
+  <p class="sub" style="margin-top:14px">É essa distinção que faz o time crescer: o mentor transfere método, e o cliente continua sendo a fonte da verdade do negócio.</p>
+</section>
+
+<section class="slide" id="sigilo" data-title="Confidencialidade">
+  <h2><span class="num">08</span>Por que o documento ideal não é compartilhado</h2>
+  <p class="sub">Se o participante recebe o documento pronto, ele aprende a copiar — não a perguntar. A skill existe para reduzir a dependência dos líderes, então a resposta pronta fica fora do caminho.</p>
+  <div class="callout danger"><h4>Regra que a skill protege</h4><p>O <code>_interno/06_documento_ideal.md</code> e a qualificação (<code>03</code> e <code>04</code>) <strong>nunca</strong> vão para quem escreve o documento — nem trecho, nem resumo, nem dica derivada. Para o participante saem apenas <code>01</code>, <code>02</code> e <code>05</code>. A pasta do caso nunca é entregue inteira.</p></div>
+  <div class="grid g3">
+    <div class="card"><h4>Para o participante</h4><p>Perguntas, esqueleto e feedback do seu próprio documento — o suficiente para conduzir bem e melhorar.</p></div>
+    <div class="card"><h4>Para o líder</h4><p>Cobertura, notas e o padrão ideal, para calibrar e cobrar sem refazer.</p></div>
+    <div class="card"><h4>Para o programa</h4><p>Histórico de notas e cobertura por pessoa: a prova de que a dependência está caindo.</p></div>
+  </div>
+</section>
+
+<section class="slide" id="prova" data-title="Prova em caso simulado">
+  <h2><span class="num">09</span>Prova: um caso simulado de ponta a ponta</h2>
+  <p class="sub">Rodamos a skill num caso fictício com armadilhas plantadas de propósito (relatório com efeito contratual, dado pessoal na exportação, contratos sem cadastro, painel abandonado). A reunião <em>pareceu</em> boa. Os números contam outra história.</p>
+  <div class="kpis">
+    <div class="kpi bad"><b>0/8</b><small>perguntas bloqueantes (P1) respondidas de forma suficiente</small></div>
+    <div class="kpi bad"><b>1/8</b><small>itens da checklist do time cobertos</small></div>
+    <div class="kpi"><b>2</b><small>assuntos importantes emergiram sem estar no plano</small></div>
+    <div class="kpi bad"><b>36/100</b><small>nota do documento escrito pelo participante</small></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h4>O que o relatório de cobertura mostrou</h4><p>O efeito contratual foi <em>mencionado pelo cliente</em> e não explorado. Volume, limite de exportação e destinação do e-mail nunca foram perguntados. O escopo (toda a base ou só a carteira acompanhada) ficou indefinido — diferença de 30× no volume.</p></div>
+    <div class="card"><h4>O que a qualificação apontou</h4><p>Critérios de aceite não testáveis, ausência de requisitos não-funcionais, observações valiosas sem destino e nenhuma rastreabilidade. O feedback separou o que era método (ensinar) do que era conteúdo (perguntar ao cliente).</p></div>
+  </div>
+  <div class="callout"><h4>Valor prático</h4><p>Sem a skill, isso apareceria na revisão do líder — ou no desenvolvimento. Com a skill, aparece em 20 minutos, com evidência, antes de virar esforço de time.</p></div>
+</section>
+
+<section class="slide" id="uso" data-title="Como usar">
+  <h2><span class="num">10</span>Como o time usa</h2>
+  <p class="sub">É uma skill portátil (padrão Agent Skills): uma pasta de arquivos Markdown, sem instalação, sem servidor, sem dependência de fornecedor. Funciona em Claude Code, Cursor, Codex ou qualquer agente que leia e escreva arquivos.</p>
+  <div class="grid g2">
+    <div class="card"><h4>Instalar</h4><p>Copiar a pasta <code>validacao-requisitos-cliente/</code> para a pasta de skills do ambiente do time <code>(.claude/skills/</code>, <code>.cursor/skills/</code> ou equivalente<code>)</code>. Nada para compilar ou configurar.</p></div>
+    <div class="card"><h4>Usar</h4><p>Pedir a fase em linguagem natural: <em>"prepara a reunião do chamado 4821"</em>, <em>"avalia a cobertura dessa transcrição"</em>, <em>"qualifica o documento que o time escreveu"</em>.</p></div>
+  </div>
+  <h3>Os comandos</h3>
+    <pre><span class="c"># preparar a reunião a partir do chamado</span>
+preparar   → 01_dossie_pre_reuniao.md
+
+<span class="c"># documento que o participante preenche na reunião</span>
+esqueleto  → 02_esqueleto_requisitos.md
+
+<span class="c"># o que a reunião cobriu, com evidência</span>
+avaliar    → 03_cobertura_reuniao.md
+
+<span class="c"># nota + feedback do documento escrito</span>
+qualificar → 04 (líder) + 05 (participante)
+
+<span class="c"># padrão sênior, interno</span>
+ideal      → _interno/06_documento_ideal.md
+
+<span class="c"># tudo o que já tem material</span>
+completo   → encadeia as fases</pre>
+  <h3>Agnóstica por construção</h3>
+  <div class="grid g4">
+    <div class="card"><h4>Chamado</h4><p>Qualquer origem: Jira, e-mail, planilha, print ou texto colado.</p></div>
+    <div class="card"><h4>Documentação</h4><p>Wiki, PDF, Markdown, diagrama ou conversa com o time.</p></div>
+    <div class="card"><h4>Modelo de IA</h4><p>Instrução declarativa, sem amarração a fornecedor.</p></div>
+    <div class="card"><h4>Cliente e stack</h4><p>Nada específico de um cliente: o caso é sempre o material de entrada.</p></div>
+  </div>
+</section>
+
+<section class="slide" id="medicao" data-title="Medição">
+  <h2><span class="num">11</span>Como medimos se está funcionando</h2>
+  <p class="sub">A skill registra os números que provam desenvolvimento — por pessoa e ao longo do tempo.</p>
+  <div class="grid g4">
+    <div class="card"><h4>Cobertura P1</h4><p>% das perguntas bloqueantes respondidas na reunião. Meta: 100%.</p></div>
+    <div class="card"><h4>Nota do documento</h4><p>Evolução da nota do mesmo participante entre casos.</p></div>
+    <div class="card"><h4>Rodadas de revisão</h4><p>Quantas vezes o líder devolve o documento antes de aceitar.</p></div>
+    <div class="card"><h4>Perguntas que sobraram</h4><p>Quantas exigiram uma segunda conversa com o cliente.</p></div>
+  </div>
+  <div class="callout"><h4>O sinal que importa</h4><p>Nota subindo e rodadas de revisão caindo, ao mesmo tempo, significa que o time está aprendendo o método — e que os líderes voltaram a ser <strong>calibradores</strong>, não gargalo.</p></div>
+</section>
+
+<section class="slide" id="proximos" data-title="Próximos passos">
+  <h2><span class="num">12</span>Próximos passos</h2>
+  <p class="sub">A skill está pronta e testada em caso simulado. Para o primeiro caso real, precisamos de três coisas do time.</p>
+  <div class="grid g3">
+    <div class="card"><h4>1 · Checklist do time</h4><p>A versão montada com a experiência dos seniores. Ela passa a ser a fonte de verdade; a embutida vira complemento.</p></div>
+    <div class="card"><h4>2 · Um chamado real</h4><p>Com a documentação do sistema correspondente, para o primeiro ciclo completo.</p></div>
+    <div class="card"><h4>3 · Um participante</h4><p>Quem vai conduzir a reunião e receber o feedback — o objetivo é o desenvolvimento dele.</p></div>
+  </div>
+  <h3>Depois do primeiro caso</h3>
+  <ul class="check">
+    <li>Rodar o ciclo completo e revisar a nota e a cobertura com o time.</li>
+    <li>Ajustar a checklist e a rubric aos termos e riscos do cliente.</li>
+    <li>Transformar em rotina: um caso por participante, por ciclo.</li>
+    <li>Acompanhar o histórico até a revisão do líder deixar de ser necessária.</li>
+  </ul>
+</section>
+
+</div>
+</main>
+
+<footer class="noprint">
+  <div class="wrap">
+    <p><strong>Skill de Validação de Requisitos com o Cliente</strong> — material de revisão e apresentação. Os exemplos usam cliente, sistema e pessoas fictícios.</p>
+    <p>RCLR · Biblioteca de skills para times de desenvolvimento — 2026.</p>
+  </div>
+</footer>
+
+<div class="stage" id="stage" aria-hidden="true">
+  <div class="slideinner" id="stageInner"></div>
+  <div class="hud noprint">
+    <button id="prev" aria-label="Anterior">← Anterior</button>
+    <span class="pos" id="pos">1 / 1</span>
+    <button id="next" aria-label="Próxima">Próxima →</button>
+    <button id="exit">Sair (Esc)</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll("header.hero.slide, section.slide"));
+  var stage = document.getElementById("stage");
+  var inner = document.getElementById("stageInner");
+  var pos = document.getElementById("pos");
+  var i = 0;
+  function titleOf(el){
+    if(!el) return "";
+    if(el.dataset && el.dataset.title) return el.dataset.title;
+    var h = el.querySelector("h2");
+    return h ? h.textContent.replace(/^\s*\d+\s*/,"").trim() : "";
+  }
+  function render(){
+    var el = slides[i];
+    var ultimo = (slides.length - 1);
+    if(i === 0){
+      inner.innerHTML = "<div class=\"heroblock\">" +
+        "<p style=\"text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:700;opacity:.85;margin:0 0 10px\">RCLR · Biblioteca de skills</p>" +
+        "<h1>Skill de Validação de Requisitos com o Cliente</h1>" +
+        "<p>Do chamado ao requisito validado — desenvolvendo o time e reduzindo a dependência dos líderes.</p>" +
+        "<p style=\"margin:18px 0 0;display:flex;flex-wrap:wrap;gap:8px\">" +
+        "<span class=\"pill\">5 fases · 6 subcomandos</span><span class=\"pill\">Checklist de 62 perguntas</span><span class=\"pill\">14 eixos de efeitos colaterais</span><span class=\"pill\">Nota 0–100 com evidência</span>" +
+        "</p></div>";
+      pos.textContent = "0 / " + ultimo;
+      stage.scrollTop = 0;
+      return;
+    }
+    var html = "<div class=\"heroblock\"><h1 style=\"font-size:26px\">" + titleOf(el) + "</h1><p>Seção " + i + " de " + ultimo + "</p></div>";
+    inner.innerHTML = html + el.innerHTML;
+    pos.textContent = i + " / " + ultimo;
+    stage.scrollTop = 0;
+  }
+  function show(n){
+    if(n < 0) n = 0;
+    if(n > slides.length-1) n = slides.length-1;
+    i = n;
+    render();
+  }
+  function start(){ document.body.classList.add("presenting"); stage.style.display="block"; show(0); }
+  function stop(){ document.body.classList.remove("presenting"); stage.style.display="none"; }
+  document.getElementById("startPres").addEventListener("click", start);
+  document.getElementById("exit").addEventListener("click", stop);
+  document.getElementById("prev").addEventListener("click", function(){ show(i-1); });
+  document.getElementById("next").addEventListener("click", function(){ show(i+1); });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "ArrowRight" || e.key === "PageDown" || e.key === " "){ if(document.body.classList.contains("presenting")){ e.preventDefault(); show(i+1); } }
+    else if(e.key === "ArrowLeft" || e.key === "PageUp"){ if(document.body.classList.contains("presenting")){ e.preventDefault(); show(i-1); } }
+    else if(e.key === "Escape"){ stop(); }
+    else if(e.key === "p" || e.key === "P"){ document.body.classList.contains("presenting") ? stop() : start(); }
+  });
+  // navegação do documento tambem entra no modo apresentação ao clicar com Ctrl/Cmd
+  document.querySelectorAll("nav.toc a").forEach(function(a){
+    a.addEventListener("click", function(e){
+      var id = a.getAttribute("href").slice(1);
+      var el = document.getElementById(id);
+      if(!el) return;
+      var idx = slides.indexOf(el);
+      if(idx > -1){ e.preventDefault(); start(); show(idx); }
+      else { stop(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>

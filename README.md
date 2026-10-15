@@ -20,7 +20,7 @@ Vantagem: nada de copiar pasta, e atualizações chegam com `/plugin update`.
 (`rclr-labs` é o marketplace, `matriz-de-testes` é o plugin — daí o `@`. Troque o
 nome do plugin para instalar os outros.)
 
-### Opção 2 — script de instalação
+### Opção 2 — script (Linux e macOS)
 
 ```bash
 git clone https://github.com/rclr-labs/plugins.git
@@ -33,7 +33,17 @@ O script copia as skills para `~/.claude/skills/` — instalação **pessoal**: 
 passam a valer em qualquer projeto que você abrir. Rodar de novo atualiza.
 `./instalar.sh --help` explica as opções.
 
-### Opção 3 — sem git, sem terminal
+### Opção 3 — Windows (PowerShell)
+
+```powershell
+.\instalar.ps1                                 # instala todas
+.\instalar.ps1 validacao-requisitos-cliente     # instala só um plugin
+.\instalar.ps1 -Listar                          # mostra o que há
+```
+
+Mesmo efeito do script bash: copia as skills para `$HOME/.claude/skills/`.
+
+### Opção 4 — sem git, sem terminal
 
 1. No GitHub, botão verde **Code** → **Download ZIP**.
 2. Descompacte.
@@ -81,6 +91,26 @@ conduz uma feature pelos estágios Plan → Design → Build → Test → Deploy
 com gates entre eles.
 
 Começa com `/squad-new`; avança com `/squad-advance`.
+
+### validacao-requisitos-cliente
+
+Prepara quem vai conduzir a reunião de validação com o cliente. A partir do chamado e da
+documentação do sistema, monta o **dossiê pré-reunião** com o pedido separado em
+necessidade, desejo e restrição, as perguntas priorizadas (P1 bloqueante) e a **varredura
+obrigatória de 14 eixos de efeitos colaterais** — o que o pedido quebra em volta: contrato,
+relatório, permissão, dado pessoal, volume, operação.
+
+Depois da reunião, compara a transcrição com os pontos planejados **e** com a checklist de
+entrevista item a item, citando o trecho que sustenta cada classificação; e qualifica o
+documento escrito pelo participante numa rubrica de 6 critérios ponderados (nota 0–100),
+com feedback que separa lacuna de método (ensina agora) de lacuna de conteúdo (vira
+pergunta ao cliente). O documento ideal é gerado para o mentor e **nunca** é compartilhado
+com quem escreve o requisito.
+
+Fases: `preparar` · `esqueleto` · `avaliar` · `qualificar` · `ideal` · `completo`.
+
+Dispara com *"preparar a reunião do chamado"*, *"avaliar a cobertura da reunião"*,
+*"qualificar o documento de requisitos"*, *"quais são os efeitos colaterais desse pedido"*.
 
 ## Licença
 

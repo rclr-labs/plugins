@@ -2,7 +2,10 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "rclr-labs",
   "description": "Marketplace da RCLR Labs para Claude Code: plugins de engenharia e QA usados nos engajamentos de consultoria.",
-  "owner": { "name": "RCLR Labs", "email": "rafael@rclr.com.br" },
+  "owner": {
+    "name": "RCLR Labs",
+    "email": "rafael@rclr.com.br"
+  },
   "plugins": [
     {
       "name": "matriz-de-testes",
@@ -18,6 +21,11 @@
       "name": "dev-squad",
       "source": "./plugins/dev-squad",
       "description": "Um time de desenvolvimento (Product Owner, Tech Lead, Devs, QA, Code Reviewer, Release Manager, agente de seguranca pre-prod e monitor de manutencao) que conduz features pelos estagios Plan-Design-Build-Test-Deploy-Maintain."
+    },
+    {
+      "name": "validacao-requisitos-cliente",
+      "source": "./plugins/validacao-requisitos-cliente",
+      "description": "Prepara a reuniao de validacao de requisitos com o cliente, avalia a cobertura da transcricao com evidencia e qualifica o documento do participante com rubrica 0-100, gerando o documento ideal interno."
     }
   ]
 }
