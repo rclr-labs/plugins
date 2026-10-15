@@ -1,6 +1,6 @@
 {
   "name": "validacao-requisitos-cliente",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Prepara a reuniao de validacao de requisitos com o cliente a partir de um chamado: dossie com perguntas priorizadas e varredura de 14 eixos de efeitos colaterais, esqueleto do documento para preencher em reuniao, avaliacao da cobertura da transcricao com evidencia, e qualificacao do documento do participante (rubrica de 6 criterios, nota 0-100) com feedback que separa metodo de conteudo. Gera o documento ideal interno, que nunca e compartilhado com quem escreve o requisito.",
   "author": {
     "name": "RCLR Labs",

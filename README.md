@@ -112,6 +112,9 @@ Fases: `preparar` · `esqueleto` · `avaliar` · `qualificar` · `ideal` · `com
 Dispara com *"preparar a reunião do chamado"*, *"avaliar a cobertura da reunião"*,
 *"qualificar o documento de requisitos"*, *"quais são os efeitos colaterais desse pedido"*.
 
+Fases por comando: `/preparar` → `/esqueleto` → `/avaliar` → `/qualificar` → `/ideal`
+(ou `/completo` para encadear o que já tem entrada).
+
 ## Licença
 
 Uso livre pelos clientes e parceiros da RCLR Labs.
