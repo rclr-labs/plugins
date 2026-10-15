@@ -67,6 +67,21 @@ Diga ao agente o que você quer, por exemplo:
 
 Se você não disser o subcomando, a skill deduz pela pasta do caso e confirma antes de gerar.
 
+## Comandos (quando instalado como plugin)
+
+| Comando | Fase |
+|---|---|
+| `/preparar` | dossiê pré-reunião: chamado + documentação + perguntas priorizadas + varredura de efeitos colaterais |
+| `/esqueleto` | documento de requisitos que o participante preenche na reunião |
+| `/avaliar` | cobertura da transcrição, item a item, com evidência citada |
+| `/qualificar` | nota 0–100 + feedback estruturado do documento escrito |
+| `/ideal` | documento ideal interno — **só o mentor** |
+| `/completo` | encadeia as fases que já têm entrada na pasta do caso |
+
+Em Claude Code o nome completo é `/validacao-requisitos-cliente:preparar`; a forma curta funciona quando não há outro comando com o mesmo nome. O comando leva o caso como argumento: `/preparar 4821`.
+
+**Sem plugin** (Cursor, Codex, DSH, ou a pasta copiada à mão) não existe barra de comandos: peça em linguagem natural, com contexto — *"prepare a reunião de validação do chamado 4821"*, *"avalie a cobertura dessa transcrição"*, *"qualifique o documento que o time escreveu"*.
+
 ## O que você precisa fornecer
 
 | Fase que você vai pedir | Entrada |
