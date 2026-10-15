@@ -5,7 +5,7 @@
 
 **Documento avaliado:** 00_entrada/documento-participante.md (v0.1) · **Participante:** Júlia
 **Data da reunião:** 2026-10-13 · **Condições:** 42 min, decisor ausente, cliente chegou com solução pronta, transcrição disponível
-**Avaliado em:** 2026-10-14 · **Rubrica:** RUBRICA_QUALIFICACAO.md
+**Avaliado em:** 2026-10-14 · **Rubrica:** a rubrica de qualificação da skill (nota 0–5 por critério → 0–100)
 
 ## Nota
 

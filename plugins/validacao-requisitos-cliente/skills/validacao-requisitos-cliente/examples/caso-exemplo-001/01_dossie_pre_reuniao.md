@@ -3,7 +3,7 @@
 > ⚠️ EXEMPLO SINTÉTICO gerado pela fase `preparar` da skill — escrito **antes** da reunião (por isso não cita a transcrição).
 
 **Reunião:** 2026-10-13 14:00 · **Participante:** Júlia · **Cliente presente:** Carlos Menezes (Gerente de Contratos), Sandra Prado (Analista de Contratos)
-**Gerado em:** 2026-10-13 (manhã) · **Fonte da checklist:** do time — 8 itens, **sem marcadores** → todos tratados como `[E]` · fonte de verdade: `00_entrada/checklist-do-time.md` · complemento: `CHECKLIST_ENTREVISTA.md`
+**Gerado em:** 2026-10-13 (manhã) · **Fonte da checklist:** do time — 8 itens, **sem marcadores** → todos tratados como `[E]` · fonte de verdade: `00_entrada/checklist-do-time.md` · complemento: a checklist de entrevista embutida da skill
 
 ## Entradas consideradas
 | Entrada | Onde está | Legibilidade | Observações |

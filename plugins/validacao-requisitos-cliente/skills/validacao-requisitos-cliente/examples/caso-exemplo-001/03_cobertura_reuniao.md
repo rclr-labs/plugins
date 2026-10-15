@@ -4,7 +4,7 @@
 
 **Reunião:** 2026-10-13 14:00 · **Duração:** 42 min · **Transcrição:** 00_entrada/transcricao.md
 **Itens planejados:** 8 P1 + 5 P2 + 3 P3 do dossiê
-**Checklist — fonte de verdade:** do time (8 itens, **sem marcadores** → todos tratados como `[E]`) · **complemento:** `CHECKLIST_ENTREVISTA.md` (62 itens: 45 `[E]` · 12 `[I]` · 5 `[T]`) → placares **separados**
+**Checklist — fonte de verdade:** do time (8 itens, **sem marcadores** → todos tratados como `[E]`) · **complemento:** checklist de entrevista embutida da skill (62 itens: 45 `[E]` · 12 `[I]` · 5 `[T]`) → placares **separados**
 **Participante:** Júlia
 
 ## Placar
