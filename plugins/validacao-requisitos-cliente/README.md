@@ -82,6 +82,16 @@ Em Claude Code o nome completo é `/validacao-requisitos-cliente:preparar`; a fo
 
 **Sem plugin** (Cursor, Codex, DSH, ou a pasta copiada à mão) não existe barra de comandos: peça em linguagem natural, com contexto — *"prepare a reunião de validação do chamado 4821"*, *"avalie a cobertura dessa transcrição"*, *"qualifique o documento que o time escreveu"*.
 
+## Apresentação
+
+O deck para levar ao cliente é um HTML único, sem dependências, em **`assets/apresentacao.html`**:
+
+- abre no navegador (duplo clique) — funciona igual em Windows, Linux e macOS;
+- o botão **▶ Modo apresentação** (ou a tecla `P`) navega tela a tela, com `←` `→` e `Esc` para sair;
+- `Ctrl/Cmd + P` gera o PDF, caso queira enviar em vez de apresentar.
+
+No marketplace o arquivo é `plugins/validacao-requisitos-cliente/skills/validacao-requisitos-cliente/assets/apresentacao.html`; numa instalação local, `~/.claude/skills/validacao-requisitos-cliente/assets/apresentacao.html`.
+
 ## O que você precisa fornecer
 
 | Fase que você vai pedir | Entrada |
