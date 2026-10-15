@@ -115,6 +115,9 @@ Dispara com *"preparar a reunião do chamado"*, *"avaliar a cobertura da reuniã
 Fases por comando: `/preparar` → `/esqueleto` → `/avaliar` → `/qualificar` → `/ideal`
 (ou `/completo` para encadear o que já tem entrada).
 
+Apresentação para o cliente (HTML autocontido, com modo apresentação):
+[`skills/validacao-requisitos-cliente/assets/apresentacao.html`](plugins/validacao-requisitos-cliente/skills/validacao-requisitos-cliente/assets/apresentacao.html).
+
 ## Licença
 
 Uso livre pelos clientes e parceiros da RCLR Labs.
