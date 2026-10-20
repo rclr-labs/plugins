@@ -26,6 +26,11 @@
       "name": "validacao-requisitos-cliente",
       "source": "./plugins/validacao-requisitos-cliente",
       "description": "Prepara a reuniao de validacao de requisitos com o cliente, avalia a cobertura da transcricao com evidencia e qualifica o documento do participante com rubrica 0-100, gerando o documento ideal interno."
+    },
+    {
+      "name": "plano-mcp",
+      "source": "./plugins/plano-mcp",
+      "description": "Avalia um repositorio existente e planeja a implementacao de um servidor MCP sobre ele: inventario deterministico, veredito de prontidao em 6 eixos com evidencia, contrato das ferramentas de leitura e plano de issues em fatias verticais. Planeja, nao implementa."
     }
   ]
 }

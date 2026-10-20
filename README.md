@@ -118,6 +118,35 @@ Fases por comando: `/preparar` → `/esqueleto` → `/avaliar` → `/qualificar`
 Apresentação para o cliente (HTML autocontido, com modo apresentação):
 [`skills/validacao-requisitos-cliente/assets/apresentacao.html`](plugins/validacao-requisitos-cliente/skills/validacao-requisitos-cliente/assets/apresentacao.html).
 
+### plano-mcp
+
+Aponta para um repositório que já existe e responde duas perguntas **antes** de qualquer
+linha de código: esse produto está pronto para expor um servidor MCP, e qual é a menor
+sequência de issues que leva até lá.
+
+Varre o repo em script determinístico — stack, superfície de rotas com verbos e sinal de
+paginação, sinais de identidade, camada de serviço, riscos, comando de teste — e dá um
+**veredito de prontidão em 6 eixos, cada nota com evidência** (`arquivo:linha`). Nota sem
+evidência vale zero. **Identidade é bloqueio absoluto:** repo sem autenticação por token e
+autorização no recurso é reprovado qualquer que seja o total, porque uma ferramenta MCP sem
+identidade age como superusuário e todo escopo vira teatro.
+
+Aprovado o repo, escreve o **contrato das ferramentas de leitura** — entradas tipadas,
+paginação e os três erros que quase todo mundo colapsa em um (**vazio ≠ inexistente ≠
+negado**) — e o **plano de issues em 7 fatias verticais**, cada uma com critério de aceite
+verificável e **evidência exigida**: a chamada da ferramenta mais o ID conferido no produto.
+Toda afirmação do plano é marcada `FATO (fonte: arquivo:linha)`, `INFERÊNCIA` ou `LACUNA`, e
+lacuna vira pergunta com dono — nunca suposição. O primeiro ciclo é sempre **somente
+leitura**; escrita exige idempotência, confirmação e auditoria, e vira a última fatia.
+
+O validador é literal de propósito: plano incompleto **não gera nada**. E nenhuma issue é
+criada pelo plugin — ele emite os comandos `gh issue create` para você revisar e rodar.
+
+Dispara com *"esse repo está pronto para um MCP?"*, *"quero expor nosso sistema para o
+assistente"*, *"faz um plano de issues pra implementar MCP"*.
+
+Comandos: `/plano-mcp` · `/mcp-prontidao` (só o veredito) · `/mcp-issues` (valida e emite).
+
 ## Licença
 
 Uso livre pelos clientes e parceiros da RCLR Labs.
