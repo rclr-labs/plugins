@@ -24,7 +24,7 @@ instalar.sh                          fallback: copia skills para ~/.claude/skill
 
 **O repo é público.** Nada de dado de cliente: razão social, nome de sistema interno,
 ID de card ou de requisito, citação de reunião, ou crítica a entregável de cliente.
-Os exemplos usam `Cliente Exemplo Ltda.` e o sistema fictício `METEO`. Se um
+Os exemplos usam `Cliente Exemplo Ltda.` e o sistema fictício `ACME`. Se um
 engajamento real for a base de um exemplo, anonimize antes do commit — não depois,
 porque o histórico do git é público também.
 

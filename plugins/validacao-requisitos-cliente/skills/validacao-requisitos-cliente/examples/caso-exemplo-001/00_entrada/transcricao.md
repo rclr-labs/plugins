@@ -40,7 +40,7 @@
 
 **[00:25] Carlos:** Só a gestão de contratos, a diretoria recebe.
 
-**[00:27] Júlia:** E o painel que já existe no METEO, vocês usam?
+**[00:27] Júlia:** E o painel que já existe no ACME, vocês usam?
 
 **[00:29] Sandra:** O painel existe, mas ninguém usa. É ruim de filtrar.
 

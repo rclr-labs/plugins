@@ -1,4 +1,4 @@
-# Documentação do sistema METEO (trecho relevante)
+# Documentação do sistema ACME (trecho relevante)
 
 > ⚠️ EXEMPLO SINTÉTICO.
 
