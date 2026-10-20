@@ -1,0 +1,20 @@
+{
+  "name": "plano-mcp",
+  "version": "0.1.0",
+  "description": "Avalia um repositório existente e planeja a implementação de um servidor MCP sobre ele: inventário determinístico, veredito de prontidão em 6 eixos, contrato das ferramentas de leitura e plano de issues em fatias verticais com critério de aceite e evidência exigida. Planeja, não implementa.",
+  "author": {
+    "name": "RCLR Labs"
+  },
+  "homepage": "https://github.com/rclr-labs/plugins",
+  "repository": "https://github.com/rclr-labs/plugins",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "planning",
+    "issues",
+    "legacy",
+    "claude-code",
+    "agent-skills"
+  ]
+}

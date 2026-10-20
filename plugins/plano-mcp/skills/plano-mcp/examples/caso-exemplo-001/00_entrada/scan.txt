@@ -1,0 +1,30 @@
+$ node scripts/mcpx.mjs scan --root ~/dev/acme
+
+repo: acme  stack: node  framework: express  arquivos: 412 (268 de código)  teste: npm run test  mcp_ja_presente: -
+
+superficie[4]{file,routes,verbs,paginated}:
+  src/routes/atendimentos.ts,6,DELETE|GET|PATCH|POST,sim
+  src/routes/contratos.ts,3,GET|POST,nao
+  src/routes/sla.ts,2,GET,nao
+  src/routes/health.ts,1,GET,nao
+  (0 arquivos a mais)
+agregado: 12 rotas em 4 arquivos; 1 com sinal de paginação
+
+identidade[4]{kind,count,where}:
+  jwt,9,src/middleware/auth.ts:14
+  usuario-na-request,22,src/routes/atendimentos.ts:28
+  autorizacao,6,src/services/atendimentos.ts:51
+  isolamento-multi-conta,11,src/services/atendimentos.ts:33
+
+camada_servico[2]{dir}:
+  src/services
+  src/repositories
+
+risco[1]{kind,count,where}:
+  query-raw,2,src/repositories/sla_snapshot.ts:88
+
+segredos_declarados: 7 nomes (valores nao lidos)  docs_de_contexto: README.md|CLAUDE.md
+
+help[2]:
+  proximo: leia references/rubrica-prontidao.md e pontue os 6 eixos com estes sinais
+  depois: mcpx issues --plan <plano.md> --repo <owner/name> --gh
