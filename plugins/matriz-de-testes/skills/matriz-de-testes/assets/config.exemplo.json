@@ -1,6 +1,6 @@
 {
   "cliente": "Cliente Exemplo Ltda.",
-  "sistema": "METEO — Sistema de Meteorologia",
+  "sistema": "ACME — Sistema de Meteorologia",
   "modulos": [
     "CONSULTA",
     "FILTRO",

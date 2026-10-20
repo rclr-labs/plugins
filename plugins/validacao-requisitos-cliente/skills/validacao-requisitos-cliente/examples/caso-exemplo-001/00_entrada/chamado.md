@@ -5,7 +5,7 @@
 **Cliente:** Cliente Exemplo Ltda. (fictício)
 **Aberto por:** Carlos Menezes — Gerente de Contratos
 **Data:** 2026-10-09 · **Canal:** e-mail para o time
-**Sistema citado:** METEO (gestão de contratos e atendimento)
+**Sistema citado:** ACME (gestão de contratos e atendimento)
 
 ## Pedido (texto original)
 

@@ -1,4 +1,4 @@
-# Exemplo de referência: Cliente Exemplo / METEO
+# Exemplo de referência: Cliente Exemplo / ACME
 
 Engajamento que originou o formato. Use como gabarito de preenchimento do
 config e de calibração do que um achado bem escrito contém.
@@ -10,7 +10,7 @@ config e de calibração do que um achado bem escrito contém.
 | Campo | Valor |
 |---|---|
 | `cliente` | Cliente Exemplo Ltda. |
-| `sistema` | METEO — Sistema de Meteorologia |
+| `sistema` | ACME — Sistema de Meteorologia |
 | `ferramenta_gestao` | a ferramenta de gestão |
 | `ambientes` | Desenvolvimento · Homologação · Homologação Cliente · Produção |
 | `prefixos` | `CONSULTA — Busca por identificador`→VOL · `CONSULTA — Atendimento Simultâneo`→ATE · `FILTRO — Limiar`→PER · `VISUAL — Plotagens`→PLT |
@@ -32,7 +32,7 @@ trecho literal com número de linha** — é isso que o
 
 ```json
 {"id":"F-0003","fonte":"ata-reuniao-fluxo-testes.md","locator":"L142-L151",
- "modulo":"METEO","funcionalidade":"FILTRO — Limiar",
+ "modulo":"ACME","funcionalidade":"FILTRO — Limiar",
  "requisito":["REQ-A1","REQ-A2"],"historia":"1002",
  "criterio_aceite":"Destacar pontos dentro do limiar configurado",
  "tecnica":"pairwise",

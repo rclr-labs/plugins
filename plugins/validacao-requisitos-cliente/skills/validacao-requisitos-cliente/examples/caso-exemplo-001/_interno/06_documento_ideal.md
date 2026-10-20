@@ -5,7 +5,7 @@
 
 # Documento de requisitos — versão ideal (interna) — chamado #4821
 
-**Cliente:** Cliente Exemplo Ltda. · **Sistema:** METEO · **Base:** chamado + documentação + transcrição + documento do participante (v0.1)
+**Cliente:** Cliente Exemplo Ltda. · **Sistema:** ACME · **Base:** chamado + documentação + transcrição + documento do participante (v0.1)
 **Reunião de validação:** 2026-10-13 · **Gerado em:** 2026-10-14
 **Status:** hipótese sênior — 7 pontos ainda dependem do cliente (Apêndice B)
 

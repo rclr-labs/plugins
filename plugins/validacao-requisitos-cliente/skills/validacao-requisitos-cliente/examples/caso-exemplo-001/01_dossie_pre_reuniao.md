@@ -9,7 +9,7 @@
 | Entrada | Onde está | Legibilidade | Observações |
 |---|---|---|---|
 | Chamado #4821 | 00_entrada/chamado.md | ok | pedido chega como solução pronta |
-| Documentação do METEO | 00_entrada/documentacao-meteo.md | ok (trecho) | cobre contratos, SLA, RMC, exportação, perfis, operação |
+| Documentação do ACME | 00_entrada/documentacao-acme.md | ok (trecho) | cobre contratos, SLA, RMC, exportação, perfis, operação |
 | Checklist do time | 00_entrada/checklist-do-time.md | ok | 8 itens, sem marcadores → todos `[E]` |
 | Planilha "SLA_outubro.xlsx" | não anexada ao caso | — | pedir antes da reunião |
 
@@ -25,7 +25,7 @@
 ## Mapa de contexto do sistema
 | Item | O que sabemos | Fonte | Confiança |
 |---|---|---|---|
-| SLA por serviço | SLA é definido por **serviço**, com `JanelaAtendimento` própria | documentacao-meteo.md §Módulo Contratos | FATO |
+| SLA por serviço | SLA é definido por **serviço**, com `JanelaAtendimento` própria | documentacao-acme.md §Módulo Contratos | FATO |
 | Snapshot diário | Job `calc_sla` às 03:00 grava `SlaSnapshot`; não há cálculo sob demanda | §Cálculo de SLA | FATO |
 | Feriados | A janela considera dias úteis e **não considera feriados** (limitação conhecida) | §Cálculo de SLA | FATO |
 | Contratos legados | Contratos anteriores a 2019 podem não ter `JanelaAtendimento` (~18% da base) e o cálculo é ignorado | §Módulo Contratos | FATO |
@@ -97,7 +97,7 @@
 | P1-5 | "Nos contratos antigos sem janela de SLA cadastrada, o que deve aparecer: sem informação, fora do relatório ou um alerta de cadastro pendente?" | 18% da base | regra explícita | "Se ficar de fora, quem percebe que o contrato existe?" |
 | P1-6 | "Quem recebe o e-mail, e cada um vê só a própria carteira ou todos os contratos?" | permissão e LGPD | destinatário + regra de visibilidade | "Um gestor com duas carteiras recebe um e-mail ou dois?" |
 | P1-7 | "Quantas linhas esse relatório costuma ter por semana? E se passar de 50 mil linhas ou 20 MB, o que preferem?" | limites técnicos conhecidos | número + alternativa aceita (link, recorte) | "Posso enviar só um resumo e um link para o detalhe?" |
-| P1-8 | "O painel de SLA do METEO não é usado hoje. O que falta nele para resolver o seu problema?" | evita construir de novo o que existe | motivo concreto (filtro, exportação, acesso) | "Se o painel tivesse filtro por carteira e exportação, resolveria?" |
+| P1-8 | "O painel de SLA do ACME não é usado hoje. O que falta nele para resolver o seu problema?" | evita construir de novo o que existe | motivo concreto (filtro, exportação, acesso) | "Se o painel tivesse filtro por carteira e exportação, resolveria?" |
 
 ### P2 — importantes
 | # | Pergunta | Por que | Resposta boa | Se vaga |

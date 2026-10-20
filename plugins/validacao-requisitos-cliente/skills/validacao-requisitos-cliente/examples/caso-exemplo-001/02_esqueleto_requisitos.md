@@ -6,7 +6,7 @@
 **Participante:** Júlia · **Status:** rascunho · **Versão:** 0.1 · **Última atualização:** 2026-10-13
 
 ## 1. Contexto e objetivo
-A gestão de contratos monta manualmente, ~2 dias/mês, um relatório de cumprimento de SLA a partir do "Painel SLA" do METEO (exportação inexistente). *(fato: chamado + doc §Painel SLA)*
+A gestão de contratos monta manualmente, ~2 dias/mês, um relatório de cumprimento de SLA a partir do "Painel SLA" do ACME (exportação inexistente). *(fato: chamado + doc §Painel SLA)*
 **Resultado esperado:** ❓ TBD — *decidir com o cliente: reduzir o trabalho manual ou agir mais rápido sobre estouros?*
 **Fora de escopo:** ❓ TBD — *obrigatório sair da reunião com algo declarado.*
 
