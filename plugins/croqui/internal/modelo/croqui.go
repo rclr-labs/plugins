@@ -31,20 +31,21 @@ const (
 // Croqui e a IR completa. Todo campo e de tipo fechado ou de categoria
 // constante. Nenhum campo e `string` cru.
 type Croqui struct {
-	Nome      Seg        `json:"nome"`
-	Camadas   []Camada   `json:"camadas"`
-	Stacks    []Stack    `json:"stacks"`
-	Entradas  []Entrada  `json:"entradas"`
-	Rotas     []RotaDecl `json:"rotas"`
-	Entidades []Entidade `json:"entidades"`
-	Jobs      []Ident    `json:"jobs"`
-	Comandos  []Ident    `json:"comandos"`
-	Eventos   []Ident    `json:"eventos"`
-	Pastas    []Pasta    `json:"pastas"`
-	Arestas   []Aresta   `json:"arestas"`
-	Recusados []Seg      `json:"recusados"`
-	Symlinks  int        `json:"symlinks_ignorados"`
-	Truncado  bool       `json:"truncado"`
+	Nome          Seg        `json:"nome"`
+	Camadas       []Camada   `json:"camadas"`
+	Stacks        []Stack    `json:"stacks"`
+	Entradas      []Entrada  `json:"entradas"`
+	Rotas         []RotaDecl `json:"rotas"`
+	Controladores []Ident    `json:"controladores"`
+	Entidades     []Entidade `json:"entidades"`
+	Jobs          []Ident    `json:"jobs"`
+	Comandos      []Ident    `json:"comandos"`
+	Eventos       []Ident    `json:"eventos"`
+	Pastas        []Pasta    `json:"pastas"`
+	Arestas       []Aresta   `json:"arestas"`
+	Recusados     []Seg      `json:"recusados"`
+	Symlinks      int        `json:"symlinks_ignorados"`
+	Truncado      bool       `json:"truncado"`
 }
 
 type Stack struct {
