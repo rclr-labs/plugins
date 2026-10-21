@@ -44,6 +44,23 @@ git clone https://github.com/rclr-labs/plugins && cd plugins/plugins/croqui
 make fechamento && make build
 ```
 
+## Reproduzir o binário publicado
+
+O build é determinístico, mas **só com o mesmo toolchain**: a versão do Go fica embutida no binário, então compilar com outra versão dá bytes diferentes — mesmo com `-trimpath` e `CGO_ENABLED=0`.
+
+A release é compilada com **Go 1.24** no CI. Para reproduzir e conferir você mesmo:
+
+```sh
+# com Go 1.24 instalado
+make dist VERSAO=0.1.0
+shasum -a 256 dist/croqui-$(go env GOOS)-$(go env GOARCH)
+# compare com o SHA256SUMS da release
+```
+
+Compilando com outra versão do Go você obtém um binário **funcionalmente equivalente e igualmente auditável**, mas com SHA diferente do publicado. Nesse caso use o seu binário, não tente casar o checksum.
+
+O caminho de auditoria que não depende de versão nenhuma é o outro: **ler a fonte** e rodar `make fechamento`.
+
 ## A rede do instalador não é a rede da ferramenta
 
 O instalador baixa o binário e confere o checksum — ele usa rede. O **binário instalado não**:
