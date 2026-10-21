@@ -1,6 +1,6 @@
 # Mapa da aplicação — acme-chamados
 
-> Gerado por `croqui 0.1.0` em 21/10/2026, **sem IA e sem rede**, a partir da estrutura do repositório. Nível 3 de 3 · ~389 tokens.
+> Gerado por `croqui 0.1.1` em 21/10/2026, **sem IA e sem rede**, a partir da estrutura do repositório. Nível 3 de 3 · ~389 tokens.
 >
 > **Contém:** nomes de classe, rota, tabela, job e comando deste repositório; contagens; e relações derivadas de convenção do framework.
 >

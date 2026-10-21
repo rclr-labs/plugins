@@ -4,7 +4,7 @@
 # `make fechamento` no codigo-fonte. A distincao esta no README.
 set -eu
 
-VERSAO="${CROQUI_VERSAO:-0.1.0}"
+VERSAO="${CROQUI_VERSAO:-0.1.1}"
 DESTINO="${CROQUI_DESTINO:-$HOME/.local/bin}"
 BASE="https://github.com/rclr-labs/plugins/releases/download/croqui-v${VERSAO}"
 

@@ -1,5 +1,5 @@
 PLATAFORMAS := darwin/arm64 darwin/amd64 linux/amd64 linux/arm64 windows/amd64
-VERSAO ?= 0.1.0
+VERSAO ?= 0.1.1
 DIST := dist
 
 .PHONY: test fechamento build dist limpa
