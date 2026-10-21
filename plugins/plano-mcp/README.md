@@ -35,7 +35,7 @@ O plugin também traz o próprio instalador, que cria **symlink** em vez de copi
 
 Cria symlinks em `~/.claude/skills/plano-mcp` (Claude Code) e `~/.agents/skills/plano-mcp` (DeepSeek Harness). Só no projeto atual: `--scope project`. Sem symlink (Windows sem dev mode): `--copy`. Para remover: `--uninstall`.
 
-> Ao contrário do `revisao-enxuta`, este instalador **não** tem `--bin`: o `mcpx` é feito para ser chamado pelo agente a partir da skill, não digitado à mão. Se você quiser o atalho de todo modo, aponte um symlink seu para `skills/plano-mcp/scripts/mcpx.mjs`.
+> Este instalador **não** tem `--bin`, de propósito: o `mcpx` é feito para ser chamado pelo agente a partir da skill, não digitado à mão. Se você quiser o atalho de todo modo, aponte um symlink seu para `skills/plano-mcp/scripts/mcpx.mjs`.
 
 ### Opção 2 — plugin Claude Code
 
