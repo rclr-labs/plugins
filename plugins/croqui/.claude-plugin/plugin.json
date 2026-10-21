@@ -1,0 +1,20 @@
+{
+  "name": "croqui",
+  "version": "0.1.0",
+  "description": "Mapeia um repositorio e gera um pacote colavel numa IA que nao tem acesso ao codigo. Deterministico, sem IA e sem rede: nao le .env nem credencial, e declara no proprio pacote o que contem e o que nao contem. Entende Laravel, Node/TS e tem fallback generico honesto.",
+  "author": {
+    "name": "RCLR Labs"
+  },
+  "homepage": "https://github.com/rclr-labs/plugins",
+  "repository": "https://github.com/rclr-labs/plugins",
+  "license": "MIT",
+  "keywords": [
+    "contexto",
+    "mapa-de-aplicacao",
+    "seguranca",
+    "laravel",
+    "typescript",
+    "go",
+    "claude-code"
+  ]
+}

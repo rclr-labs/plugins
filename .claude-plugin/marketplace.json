@@ -36,6 +36,11 @@
       "name": "sensei",
       "source": "./plugins/sensei",
       "description": "Revisao tecnica roteada por modo: review (codigo, com camada por linguagem - PHP, Laravel, COBOL, PowerShell, Python, SQL), sec (seguranca), sql (consultas), docs (documentacao), espec (especialistas em paralelo com verificacao independente) e repo (analisa o repositorio e recomenda ao time por onde comecar). Revisa o diff, nao o repositorio, e mede a conta de tokens de cada revisao."
+    },
+    {
+      "name": "croqui",
+      "source": "./plugins/croqui",
+      "description": "Mapeia um repositorio e gera um pacote colavel numa IA que nao tem acesso ao codigo. Deterministico, sem IA e sem rede: nao le .env nem credencial, e declara no proprio pacote o que contem e o que nao contem."
     }
   ]
 }

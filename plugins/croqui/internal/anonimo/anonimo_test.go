@@ -11,7 +11,7 @@ import (
 )
 
 // Nomes de cliente ficticios: o repo e publico. "ACME" e o sistema ficticio
-// da casa; nunca use razao social nem nome de sistema real aqui.
+// da casa; nunca use nome de empresa real nem de sistema real aqui.
 func croquiComNomesDeCliente() *modelo.Croqui {
 	return &modelo.Croqui{
 		Nome:    "acme-chamados",
