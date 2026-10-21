@@ -33,7 +33,14 @@ var negados = []*regexp.Regexp{
 	regexp.MustCompile(`(^|/)\.env($|\.)`),
 	regexp.MustCompile(`\.(pem|key|p12|pfx|keystore|jks)$`),
 	regexp.MustCompile(`(^|/)id_(rsa|dsa|ecdsa|ed25519)`),
-	regexp.MustCompile(`(^|/)(credentials?|secrets?)($|[._-])`),
+	// "secret"/"credential" so quando e o NOME do arquivo, nao quando e
+	// prefixo de nome de ferramenta. O padrao antigo, [._-], recusava
+	// secret-scan.sh -- um script de CI, nao um segredo. Em seguranca o custo
+	// era zero (errar recusando e a direcao segura, e a garantia e a camada de
+	// posicao), mas a linha "recusados na leitura" e sinal de CONFIANCA
+	// mostrado ao usuario: chamar ferramenta de arquivo sensivel corroi
+	// exatamente o que a ferramenta vende.
+	regexp.MustCompile(`(^|/)\.?(credentials?|secrets?)(\.[^/]*)?$`),
 	regexp.MustCompile(`(^|/)auth\.json$`), // o do Composer guarda token
 	regexp.MustCompile(`(^|/)\.(npmrc|netrc|pgpass)$`),
 }

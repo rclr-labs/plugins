@@ -101,3 +101,41 @@ func TestVendorEPulado(t *testing.T) {
 		}
 	}
 }
+
+// Precisao da deny-list: a linha "recusados na leitura" e sinal de confianca
+// mostrado ao usuario, e recusar ferramenta de CI como se fosse segredo
+// corroi esse sinal. Rodar contra o proprio repo de plugins pegou isto.
+func TestDenyListNaoRecusaFerramentaComSecretNoNome(t *testing.T) {
+	d := t.TempDir()
+	escreve(t, d, "composer.json", "{}")
+	for _, nome := range []string{
+		"secret-scan.sh", "secrets-doc.md", "credential_helper.go", "SecretsManager.php",
+	} {
+		escreve(t, d, nome, "conteudo de ferramenta")
+	}
+	r, err := andar.Caminhar(d, 10000)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(r.Recusados) != 0 {
+		t.Errorf("recusou ferramenta como se fosse segredo: %v", r.Recusados)
+	}
+}
+
+func TestDenyListSegueRecusandoArquivoDeSegredoDeVerdade(t *testing.T) {
+	d := t.TempDir()
+	escreve(t, d, "composer.json", "{}")
+	for _, nome := range []string{
+		"secrets", "secrets.json", "credentials", "credentials.yml",
+		".secrets", ".env", ".env.producao", "chave.pem", "id_rsa", "auth.json",
+	} {
+		escreve(t, d, nome, "segredo")
+	}
+	r, err := andar.Caminhar(d, 10000)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(r.Recusados) != 10 {
+		t.Errorf("recusados=%d, queria 10: %v", len(r.Recusados), r.Recusados)
+	}
+}

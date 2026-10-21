@@ -23,6 +23,12 @@ var (
 	// caractere de palavra" vira grupo de captura negado. Sem isso, `\bclass`
 	// casaria PedidoController::class e $obj->class.
 	// Grupo 1 e o caractere anterior (descartado); grupo 2 e o nome.
+	// Toda rota declarada, independente do handler. Fonte de verdade da
+	// EXISTENCIA da rota; as duas regras acima apenas a enriquecem com
+	// controlador e metodo. Sem isto, rota com closure -- o padrao do
+	// skeleton Laravel 11/12 e uso comum em app real -- ficava de fora.
+	reRotaQualquer = regexp.MustCompile(
+		`Route::(get|post|put|patch|delete|options|head)\s*\(\s*['"]([^'"]{0,120})['"]`)
 	reClasse   = regexp.MustCompile(`(^|[^:A-Za-z0-9_$>])(?:final\s+|abstract\s+)?class\s+([A-Za-z_][A-Za-z0-9_]*)`)
 	reTabela   = regexp.MustCompile(`\$table\s*=\s*['"]([A-Za-z_][A-Za-z0-9_]*)['"]`)
 	reFillable = regexp.MustCompile(`\$fillable\s*=\s*\[([^\]]{0,600})\]`)
@@ -69,24 +75,43 @@ func classesDe(corpo string) []modelo.Ident {
 	return out
 }
 
+type handler struct {
+	ctrl, metodo string
+}
+
 func rotasLaravel(corpo string, c *modelo.Croqui) {
 	limpo := semComentarios(corpo)
-	add := func(verbo, caminho, ctrl, metodo string) {
-		v, err1 := modelo.NovoVerbo(verbo)
-		p, err2 := modelo.NovaRota(caminho)
-		id, err3 := modelo.NovoIdent(ctrl)
-		m, err4 := modelo.NovoIdent(metodo)
-		if err1 != nil || err2 != nil || err3 != nil || err4 != nil {
-			return // fora da forma: descarta em silencio, nao adivinha
+
+	// Primeiro indexa os handlers por verbo+caminho; depois percorre TODAS as
+	// rotas declaradas. Rota sem handler casado e closure, e sai sem
+	// controlador -- Controlador e Metodo sao omitempty na IR de proposito.
+	handlers := map[string]handler{}
+	for _, re := range []*regexp.Regexp{reRotaArray, reRotaArroba} {
+		for _, m := range re.FindAllStringSubmatch(limpo, -1) {
+			handlers[strings.ToUpper(m[1])+" "+m[2]] = handler{ctrl: m[3], metodo: m[4]}
 		}
-		c.Rotas = append(c.Rotas, modelo.RotaDecl{Verbo: v, Caminho: p, Controlador: id, Metodo: m})
-		c.Arestas = append(c.Arestas, modelo.Aresta{De: id, Para: m, Tipo: modelo.ArestaRotaControlador})
 	}
-	for _, m := range reRotaArray.FindAllStringSubmatch(limpo, -1) {
-		add(m[1], m[2], m[3], m[4])
-	}
-	for _, m := range reRotaArroba.FindAllStringSubmatch(limpo, -1) {
-		add(m[1], m[2], m[3], m[4])
+
+	for _, m := range reRotaQualquer.FindAllStringSubmatch(limpo, -1) {
+		v, err := modelo.NovoVerbo(m[1])
+		if err != nil {
+			continue
+		}
+		p, err := modelo.NovaRota(m[2])
+		if err != nil {
+			continue // fora da forma: descarta em silencio, nao adivinha
+		}
+		rota := modelo.RotaDecl{Verbo: v, Caminho: p}
+		if h, ok := handlers[string(v)+" "+m[2]]; ok {
+			id, e1 := modelo.NovoIdent(h.ctrl)
+			met, e2 := modelo.NovoIdent(h.metodo)
+			if e1 == nil && e2 == nil {
+				rota.Controlador, rota.Metodo = id, met
+				c.Arestas = append(c.Arestas, modelo.Aresta{
+					De: id, Para: met, Tipo: modelo.ArestaRotaControlador})
+			}
+		}
+		c.Rotas = append(c.Rotas, rota)
 	}
 }
 

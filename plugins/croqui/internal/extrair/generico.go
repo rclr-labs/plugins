@@ -14,18 +14,30 @@ import (
 // "clientes/acme/". Pasta e contagem, nao lista.
 const maxPastas = 120
 
-// manifestos mapeia arquivo de manifesto para a stack e o tipo de entrada.
-var manifestos = []struct {
-	arquivo string
-	stack   string
-	entrada modelo.TipoEntrada
+// manifestos marca a STACK. Manifesto NAO e ponto de entrada: composer.json
+// aparecendo como entrada "http" era erro de categoria, visivel no pacote do
+// skeleton do Laravel. Entrada vem de arquivo pelo qual a aplicacao e de
+// fato invocada, listado em entradasReais.
+var manifestos = map[string]string{
+	"composer.json":  "php",
+	"package.json":   "node",
+	"go.mod":         "go",
+	"pyproject.toml": "python",
+	"Dockerfile":     "docker",
+}
+
+// entradasReais sao arquivos pelos quais a aplicacao e de fato invocada.
+var entradasReais = []struct {
+	sufixo string
+	tipo   modelo.TipoEntrada
 }{
-	{"composer.json", "php", modelo.EntradaHTTP},
-	{"package.json", "node", modelo.EntradaHTTP},
-	{"go.mod", "go", modelo.EntradaCLI},
-	{"pyproject.toml", "python", modelo.EntradaCLI},
-	{"Makefile", "make", modelo.EntradaCLI},
-	{"Dockerfile", "docker", modelo.EntradaCLI},
+	{"public/index.php", modelo.EntradaHTTP},
+	{"manage.py", modelo.EntradaCLI},
+	{"wsgi.py", modelo.EntradaHTTP},
+	{"asgi.py", modelo.EntradaHTTP},
+	{"main.go", modelo.EntradaCLI},
+	{"server.js", modelo.EntradaHTTP},
+	{"server.ts", modelo.EntradaHTTP},
 }
 
 func generico(raiz string, r *andar.Resultado, c *modelo.Croqui) {
@@ -68,16 +80,19 @@ func generico(raiz string, r *andar.Resultado, c *modelo.Croqui) {
 		c.Pastas = append(c.Pastas, *agrega[k])
 	}
 
-	for _, m := range manifestos {
-		for _, rel := range r.Arquivos {
-			if filepath.ToSlash(rel) != m.arquivo {
+	for _, rel := range r.Arquivos {
+		s := filepath.ToSlash(rel)
+		if stack, ok := manifestos[s]; ok {
+			if v, err := modelo.NovaSeg(stack); err == nil {
+				c.Stacks = append(c.Stacks, modelo.Stack{Nome: v})
+			}
+		}
+		for _, e := range entradasReais {
+			if s != e.sufixo && !strings.HasSuffix(s, "/"+e.sufixo) {
 				continue
 			}
-			if s, err := modelo.NovaSeg(m.stack); err == nil {
-				c.Stacks = append(c.Stacks, modelo.Stack{Nome: s})
-			}
-			if a, err := modelo.NovaSeg(m.arquivo); err == nil {
-				c.Entradas = append(c.Entradas, modelo.Entrada{Tipo: m.entrada, Alvo: []modelo.Seg{a}})
+			if segs, err := segmentos(s); err == nil {
+				c.Entradas = append(c.Entradas, modelo.Entrada{Tipo: e.tipo, Alvo: segs})
 			}
 		}
 	}

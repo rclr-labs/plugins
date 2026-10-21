@@ -170,3 +170,70 @@ class Real implements ShouldQueue {
 		t.Errorf("classe errada: %v", c.Jobs)
 	}
 }
+
+// Rodar contra o skeleton OFICIAL do Laravel (laravel/laravel) mostrou que a
+// rota do proprio skeleton nao era extraida: ela usa closure, nao
+// controlador. E o padrao do Laravel 11/12 e uso comum em app real.
+func TestRotaComClosureEExtraidaSemControlador(t *testing.T) {
+	d := t.TempDir()
+	escreve(t, d, "composer.json", `{"require":{"laravel/framework":"^12.0"}}`)
+	escreve(t, d, "artisan", "#!/usr/bin/env php")
+	escreve(t, d, "routes/web.php", `<?php
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+Route::post('/webhook', fn () => resposta());
+Route::get('/pedidos', [PedidoController::class, 'index']);`)
+
+	raiz, _ := andar.Raiz(d)
+	r, _ := andar.Caminhar(raiz, 10000)
+	c, _ := extrair.De(raiz, r)
+
+	if len(c.Rotas) != 3 {
+		t.Fatalf("rotas=%d, queria 3 (duas closures e uma com controlador): %+v", len(c.Rotas), c.Rotas)
+	}
+	var raiz0, webhook, comCtrl bool
+	for _, rt := range c.Rotas {
+		switch {
+		case rt.Caminho == "/" && rt.Verbo == "GET" && rt.Controlador == "":
+			raiz0 = true
+		case rt.Caminho == "/webhook" && rt.Verbo == "POST" && rt.Controlador == "":
+			webhook = true
+		case rt.Caminho == "/pedidos" && rt.Controlador == "PedidoController" && rt.Metodo == "index":
+			comCtrl = true
+		}
+	}
+	if !raiz0 {
+		t.Error("closure com function() nao extraida")
+	}
+	if !webhook {
+		t.Error("closure com fn() nao extraida")
+	}
+	if !comCtrl {
+		t.Error("rota com controlador perdeu o controlador")
+	}
+}
+
+// Manifesto marca a STACK, nao e ponto de entrada. composer.json aparecendo
+// como entrada "http" era erro de categoria, visivel no pacote do skeleton.
+func TestManifestoNaoEPontoDeEntrada(t *testing.T) {
+	c := laravelFalso(t)
+	for _, e := range c.Entradas {
+		alvo := string(e.Alvo[len(e.Alvo)-1])
+		if alvo == "composer.json" || alvo == "package.json" || alvo == "Makefile" {
+			t.Errorf("%s nao e ponto de entrada, e marcador de stack: %+v", alvo, e)
+		}
+	}
+	// E a stack tem que continuar sendo detectada por ele.
+	var viuPhp bool
+	for _, s := range c.Stacks {
+		if s.Nome == "php" {
+			viuPhp = true
+		}
+	}
+	if !viuPhp {
+		t.Errorf("composer.json tem que marcar a stack php: %+v", c.Stacks)
+	}
+}

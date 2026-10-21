@@ -47,3 +47,46 @@ func TestAchadoNaoRepeteOValor(t *testing.T) {
 		}
 	}
 }
+
+// Falso positivo achado rodando contra repo REAL, nao contra fixture: a
+// classe de caracteres do base64 inclui "/", logo todo caminho de arquivo
+// com 40+ caracteres parecia base64. O primeiro caso abaixo e literal: foi
+// o que abortou o croqui no proprio repo de plugins.
+func TestBase64NaoCasaCaminhoDeArquivo(t *testing.T) {
+	caminhos := []string{
+		"plugins/sensei/skills/sensei/scripts/lib",
+		"app/Http/Controllers/Api/V2/PedidoController",
+		"internal/render/templates/partials/cabecalho",
+		"database/migrations/2026_01_01_000000_cria_pedidos",
+		"resources/views/componentes/formulario/campos/selecao",
+	}
+	for _, p := range caminhos {
+		for _, a := range guarda.Conferir("| `" + p + "` | 7 |") {
+			if a.Regra == "base64-longo" {
+				t.Errorf("caminho tratado como base64: %q", p)
+			}
+		}
+	}
+}
+
+// E o outro lado: base64 de verdade tem que continuar sendo pego. Limiar
+// escolhido medindo entropia de Shannon -- caminho chega a 3.91 bit/char,
+// base64 real comeca em 4.48, entao 4.2 separa com margem para os dois lados.
+func TestBase64DeVerdadeSeguePego(t *testing.T) {
+	reais := []string{
+		"aGVsbG8gbXVuZG8gc2VjcmV0byAxMjM0NTY3OA==",
+		"dGhpcyBpcyBhIHZlcnkgc2VjcmV0IGtleSBmb3IgcHJvZHVjdGlvbg==",
+		"7mJ2nQ8xKvL4pR9sT1wY3zB6cD0eF5gH8iJ2kL4mN6o=",
+	}
+	for _, s := range reais {
+		var pego bool
+		for _, a := range guarda.Conferir("chave: " + s) {
+			if a.Regra == "base64-longo" {
+				pego = true
+			}
+		}
+		if !pego {
+			t.Errorf("base64 real nao pego: %q", s)
+		}
+	}
+}
