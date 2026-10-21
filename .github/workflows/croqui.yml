@@ -1,0 +1,54 @@
+name: croqui
+
+on:
+  push:
+    paths: ["plugins/croqui/**", ".github/workflows/croqui.yml"]
+  pull_request:
+    paths: ["plugins/croqui/**"]
+  release:
+    types: [published]
+
+defaults:
+  run:
+    working-directory: plugins/croqui
+
+jobs:
+  teste:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+          cache: false
+      - run: gofmt -l . | tee /tmp/fmt && test ! -s /tmp/fmt
+      - run: go vet ./...
+      - run: go test ./... -count=1
+      # A garantia central falha o build se alguem importar rede ou exec.
+      - run: make fechamento
+      # go.mod sem require: se aparecer dependencia, o build para.
+      - name: go.mod sem dependencia de terceiro
+        run: |
+          if grep -qE '^[[:space:]]*require' go.mod; then
+            echo "go.mod ganhou require: o croqui e stdlib puro" >&2
+            exit 1
+          fi
+          test ! -f go.sum || { echo "go.sum apareceu" >&2; exit 1; }
+
+  dist:
+    needs: teste
+    if: github.event_name == 'release' && startsWith(github.event.release.tag_name, 'croqui-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+          cache: false
+      - run: make dist VERSAO=${GITHUB_REF_NAME#croqui-v}
+      - name: anexar binarios e checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" dist/* --clobber
