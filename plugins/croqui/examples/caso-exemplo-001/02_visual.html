@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:">
+<title>Mapa — acme-chamados</title>
+<style>
+:root{--tinta:#14181f;--papel:#fbfaf7;--fraco:#6b7280;--linha:#d9d6cf;--acento:#1f4e79;}
+@media (prefers-color-scheme:dark){:root{--tinta:#e8e6e1;--papel:#14161a;--fraco:#9aa3af;--linha:#2b2f36;--acento:#7fb2e5;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--papel);color:var(--tinta);font:14px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:28px}
+main{max-width:980px;margin:0 auto}
+h1{font-size:25px;margin:0 0 4px;letter-spacing:-.01em}
+.ameaca{border:1px solid var(--linha);border-left:3px solid var(--acento);padding:12px 14px;margin:18px 0;font-size:12.5px;color:var(--fraco);background:transparent}
+.ameaca b{color:var(--tinta)}
+h2{font-size:15px;margin:26px 0 8px;text-transform:uppercase;letter-spacing:.06em;color:var(--fraco)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:5px 9px;border-bottom:1px solid var(--linha)}
+th{color:var(--fraco);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+.rolagem{overflow-x:auto;border:1px solid var(--linha);padding:10px}
+.no{fill:transparent;stroke:var(--linha)}
+.rot{fill:var(--tinta);font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+.col{fill:var(--fraco);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em}
+.aresta{stroke:var(--acento);stroke-width:1.2}
+.vazio{fill:var(--fraco);font-size:12px}
+footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--linha);color:var(--fraco);font-size:11.5px}
+</style></head><body><main>
+<h1>Mapa da aplicação — acme-chamados</h1>
+<p class="mono" style="color:var(--fraco)">croqui 0.1.0 · 21/10/2026 · nível 3 de 3</p>
+
+<div class="ameaca">
+<b>Gerado sem IA e sem rede</b>, a partir da estrutura do repositório.<br>
+<b>Contém:</b> nomes de classe, rota, tabela, job e comando; contagens; relações derivadas de convenção.<br>
+<b>Não contém:</b> valor de configuração, segredo, credencial, conteúdo de <code>.env</code>, literal de código, nem linha de código-fonte.<br>
+<b>Recusados na leitura:</b> <code>.env.example</code>.<br>
+<b>symlinks ignorados:</b> 0 (nunca seguidos).<br>
+O grafo vem de convenção e de import, em nível de módulo: <b>não é call graph</b> e não vem de execução.
+</div>
+
+<h2>O que é</h2>
+<table><tr><th>Camadas</th><td class="mono">laravel, generico</td></tr>
+<tr><th>Rotas</th><td>5</td></tr>
+<tr><th>Controladores</th><td>1</td></tr>
+<tr><th>Entidades</th><td>2</td></tr>
+<tr><th>Jobs</th><td>1</td></tr>
+<tr><th>Comandos</th><td>0</td></tr></table>
+
+<h2>Rotas</h2>
+<div class="rolagem"><table><tr><th>Verbo</th><th>Caminho</th><th>Controlador</th><th>Método</th></tr>
+<tr><td>GET</td><td class="mono">/chamados</td><td class="mono">ChamadoController</td><td class="mono">index</td></tr><tr><td>POST</td><td class="mono">/chamados</td><td class="mono">ChamadoController</td><td class="mono">store</td></tr><tr><td>GET</td><td class="mono">/chamados/{id}</td><td class="mono">ChamadoController</td><td class="mono">show</td></tr><tr><td>DELETE</td><td class="mono">/chamados/{id}</td><td class="mono">ChamadoController</td><td class="mono">destroy</td></tr><tr><td>GET</td><td class="mono">/saude</td><td class="mono"></td><td class="mono"></td></tr>
+</table></div>
+
+<h2>Entidades e tabelas</h2>
+<div class="rolagem"><table><tr><th>Classe</th><th>Tabela</th><th>Campos</th></tr>
+<tr><td class="mono">Chamado</td><td class="mono">chamados</td><td>4</td></tr><tr><td class="mono">Cliente</td><td class="mono">clientes</td><td>2</td></tr>
+</table></div>
+
+<h2>Grafo</h2>
+<div class="rolagem"><svg role="img" aria-label="grafo da aplicacao" width="1070" height="240" viewBox="0 0 1070 240"><text x="20" y="32" class="col">rota</text><rect x="20" y="50" width="190" height="24" rx="4" class="no"/><text x="28" y="66" class="rot">GET /chamados</text><line x1="210" y1="62" x2="300" y2="62" class="aresta"/><rect x="20" y="84" width="190" height="24" rx="4" class="no"/><text x="28" y="100" class="rot">POST /chamados</text><rect x="20" y="118" width="190" height="24" rx="4" class="no"/><text x="28" y="134" class="rot">GET /chamados/{id}</text><rect x="20" y="152" width="190" height="24" rx="4" class="no"/><text x="28" y="168" class="rot">DELETE /chamados/{id}</text><rect x="20" y="186" width="190" height="24" rx="4" class="no"/><text x="28" y="202" class="rot">GET /saude</text><text x="300" y="32" class="col">controlador</text><rect x="300" y="50" width="190" height="24" rx="4" class="no"/><text x="308" y="66" class="rot">ChamadoController</text><line x1="490" y1="62" x2="580" y2="62" class="aresta"/><text x="580" y="32" class="col">entidade</text><rect x="580" y="50" width="190" height="24" rx="4" class="no"/><text x="588" y="66" class="rot">Chamado</text><line x1="770" y1="62" x2="860" y2="62" class="aresta"/><rect x="580" y="84" width="190" height="24" rx="4" class="no"/><text x="588" y="100" class="rot">Cliente</text><line x1="770" y1="96" x2="860" y2="96" class="aresta"/><text x="860" y="32" class="col">tabela</text><rect x="860" y="50" width="190" height="24" rx="4" class="no"/><text x="868" y="66" class="rot">chamados</text><rect x="860" y="84" width="190" height="24" rx="4" class="no"/><text x="868" y="100" class="rot">clientes</text></svg></div>
+
+<footer>Este arquivo abre offline: nenhum script, nenhuma fonte ou folha de estilo externa, nenhuma requisição. O <code>.md</code> gerado pelo mesmo comando é a superfície de revisão — leia-o antes de compartilhar.</footer>
+</main></body></html>

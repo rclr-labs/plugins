@@ -92,3 +92,24 @@ func TestNomeDeEntidadeSaiEntreBacktick(t *testing.T) {
 		t.Error("identificador tem que sair entre backtick: delimita injecao no markdown")
 	}
 }
+
+// Rota com closure nao tem controlador nem metodo. Imprimir duas crases
+// vazias le como glitch; travessao diz "nao ha", que e o fato.
+func TestCampoVazioSaiComTravessaoNaoComCrasesVazias(t *testing.T) {
+	c := croquiExemplo()
+	c.Rotas = []modelo.RotaDecl{{Verbo: "GET", Caminho: "/saude"}}
+	c.Entidades = []modelo.Entidade{{Classe: "Fila"}} // sem tabela
+	s, err := render.MD(c, opcoes(2))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(s, "| `` |") {
+		t.Error("campo vazio saiu como crases vazias")
+	}
+	if !strings.Contains(s, "| GET | `/saude` | — | — |") {
+		t.Errorf("rota sem controlador deveria usar travessao:\n%s", s)
+	}
+	if !strings.Contains(s, "| `Fila` | — |") {
+		t.Error("entidade sem tabela deveria usar travessao")
+	}
+}

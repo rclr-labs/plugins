@@ -123,3 +123,67 @@ func TestVisualEscreveHTMLQueAbreOffline(t *testing.T) {
 		}
 	}
 }
+
+// Pedir ajuda nao e erro. O default do Go saia com 2 -- o codigo reservado
+// para flag desconhecida -- e um agente que trate 2 como falha concluiria
+// que a ferramenta quebrou ao ser consultada.
+func TestHelpSaiComZero(t *testing.T) {
+	for _, args := range [][]string{{"--help"}, {"-h"}, {"pacote", "--help"}, {"visual", "-h"}} {
+		var out, errOut bytes.Buffer
+		if code := rodar(args, &out, &errOut); code != 0 {
+			t.Errorf("rodar(%v) exit=%d, queria 0", args, code)
+		}
+	}
+}
+
+// Principio 10 do AXI: help conciso, por subcomando. O default do Go lista
+// flag em ordem alfabetica, sem dizer o que a ferramenta faz nem que
+// subcomandos existem.
+func TestHelpGeralDizOQueAFerramentaFazEQuaisSaoOsSubcomandos(t *testing.T) {
+	var out, errOut bytes.Buffer
+	rodar([]string{"--help"}, &out, &errOut)
+	s := out.String() + errOut.String()
+
+	for _, exigido := range []string{
+		"sem IA", "sem rede", // o que ela e
+		"pacote", "visual", "grafo", // os subcomandos
+		"--nivel", "--anonimo", "--budget", // as flags que importam
+		"exemplo", // tem exemplo de uso
+	} {
+		if !strings.Contains(s, exigido) {
+			t.Errorf("help geral sem %q", exigido)
+		}
+	}
+	// Conciso: help que nao cabe na tela nao e lido.
+	if n := strings.Count(s, "\n"); n > 30 {
+		t.Errorf("help com %d linhas; teto 30", n)
+	}
+}
+
+func TestHelpDeSubcomandoFalaDoSubcomando(t *testing.T) {
+	var out, errOut bytes.Buffer
+	rodar([]string{"pacote", "--help"}, &out, &errOut)
+	s := out.String() + errOut.String()
+	if !strings.Contains(s, "croqui pacote") {
+		t.Error("help de subcomando tem que nomear o subcomando")
+	}
+	if !strings.Contains(s, "--nivel") {
+		t.Error("help de pacote tem que citar --nivel")
+	}
+	// Help de `pacote` nao polui com o que so serve a `visual`.
+	if strings.Contains(s, "abre offline") {
+		t.Error("help de pacote citou detalhe que e do visual")
+	}
+}
+
+// Nao pode escrever arquivo nem tocar o repo ao pedir ajuda.
+func TestHelpNaoTocaOSistemaDeArquivos(t *testing.T) {
+	d := repoDeTeste(t)
+	antes, _ := os.ReadDir(d)
+	var out, errOut bytes.Buffer
+	rodar([]string{"pacote", "--root", d, "--help"}, &out, &errOut)
+	depois, _ := os.ReadDir(d)
+	if len(antes) != len(depois) {
+		t.Error("pedir ajuda escreveu arquivo")
+	}
+}

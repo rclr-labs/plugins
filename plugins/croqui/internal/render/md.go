@@ -121,7 +121,8 @@ func secoes(c *modelo.Croqui, n int) string {
 					continue
 				}
 				vistas[r] = true
-				fmt.Fprintf(&b, "| %s | `%s` | `%s` | `%s` |\n", r.Verbo, r.Caminho, r.Controlador, r.Metodo)
+				fmt.Fprintf(&b, "| %s | `%s` | %s | %s |\n", r.Verbo, r.Caminho,
+					ouTravessao(string(r.Controlador)), ouTravessao(string(r.Metodo)))
 			}
 		}
 		if len(c.Controladores) > 0 {
@@ -133,7 +134,8 @@ func secoes(c *modelo.Croqui, n int) string {
 		} else {
 			b.WriteString("| Classe | Tabela | Campos declarados |\n|---|---|---|\n")
 			for _, e := range c.Entidades {
-				fmt.Fprintf(&b, "| `%s` | `%s` | %d |\n", e.Classe, e.Tabela, len(e.Campos))
+				fmt.Fprintf(&b, "| `%s` | %s | %d |\n", e.Classe,
+					ouTravessao(string(e.Tabela)), len(e.Campos))
 			}
 		}
 		b.WriteString("\n## 5. Jobs, comandos e eventos\n\n")
@@ -176,6 +178,16 @@ func Mermaid(c *modelo.Croqui) string {
 	}
 	b.WriteString("```\n")
 	return b.String()
+}
+
+// ouTravessao: campo ausente vira travessao, nao duas crases vazias. Rota
+// com closure nao tem controlador, e "nao ha" e um fato a declarar, nao um
+// buraco a disfarcar.
+func ouTravessao(s string) string {
+	if s == "" {
+		return "—"
+	}
+	return "`" + s + "`"
 }
 
 func humano(n int) string {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -44,6 +45,8 @@ func rodar(args []string, out, errOut io.Writer) int {
 
 	fs := flag.NewFlagSet("croqui", flag.ContinueOnError)
 	fs.SetOutput(errOut)
+	// Suprime o Usage default do flag: quem imprime ajuda e ajuda().
+	fs.Usage = func() {}
 	raizFlag := fs.String("root", ".", "raiz do repositorio")
 	nivel := fs.Int("nivel", 2, "1 identidade, 2 inventario, 3 com grafo")
 	budget := fs.Int("budget", 0, "teto de tokens; corta o nivel para caber")
@@ -53,6 +56,14 @@ func rodar(args []string, out, errOut io.Writer) int {
 	paraStdout := fs.Bool("stdout", false, "escreve em stdout em vez de arquivo")
 	forca := fs.Bool("forca", false, "sobrescreve arquivo existente")
 	if err := fs.Parse(args); err != nil {
+		// Pedir ajuda nao e erro: sai com 0, e antes de tocar o sistema de
+		// arquivos -- `--help` nao pode depender de estar dentro de um repo.
+		if errors.Is(err, flag.ErrHelp) {
+			ajuda(sub, out)
+			return 0
+		}
+		fmt.Fprintf(errOut, "flag desconhecida: %v\n", err)
+		fmt.Fprintf(errOut, "help[]: croqui --help\n")
 		return 2
 	}
 
