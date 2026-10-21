@@ -12,10 +12,10 @@ Revisão técnica roteada por modo. O `SKILL.md` decide o modo e carrega **um** 
 | `sec` | Segurança: só entra achado com caminho de ataque |
 | `sql` | Consulta: semântica, mutação, plano, concorrência |
 | `docs` | Documentação: verdade, fonte, acionabilidade |
-| `fundo` | Especialistas em paralelo **+** verificador independente |
+| `espec` | Especialistas em paralelo **+** verificador independente |
 | `repo` | Analisa o repositório e recomenda ao time por onde começar |
 
-Sem argumento, o roteador infere o modo pelo contexto. Sem contexto claro, **ele pergunta** — não escolhe sozinho. `fundo` nunca é inferido: custa ~5× e precisa de aceite.
+Sem argumento, o roteador infere o modo pelo contexto. Sem contexto claro, **ele pergunta** — não escolhe sozinho. `espec` nunca é inferido: custa ~5× e precisa de aceite.
 
 ## Três alvos
 
@@ -42,14 +42,14 @@ Para diff, o `collect` monta hunks com contexto, varre ~30 padrões de risco por
 
 Linguagem detectada **sem** arquivo não é erro: revisa com as gerais e **diz isso na resposta**. `--lang` força quando a detecção erra.
 
-## O modo `fundo`
+## O modo `espec`
 
-Na passada única, quem levanta a hipótese é quem a refuta — e o mesmo modelo está enviesado a confirmar o que acabou de propor. No `fundo`, quatro especialistas (segurança · correção · dados · contrato) rodam em paralelo sobre o mesmo pacote, e um **verificador independente** recebe os candidatos **sem o raciocínio** de quem os propôs, com a tarefa de derrubá-los.
+Na passada única, quem levanta a hipótese é quem a refuta — e o mesmo modelo está enviesado a confirmar o que acabou de propor. No `espec`, quatro especialistas (segurança · correção · dados · contrato) rodam em paralelo sobre o mesmo pacote, e um **verificador independente** recebe os candidatos **sem o raciocínio** de quem os propôs, com a tarefa de derrubá-los.
 
 A linha de abertura do relatório é o produto mais útil do modo:
 
 ```
-fundo · 4 especialistas + verificador · 11 candidatos → 6 confirmados, 2 rebaixados, 3 descartados
+espec · 4 especialistas + verificador · 11 candidatos → 6 confirmados, 2 rebaixados, 3 descartados
 ```
 
 **A taxa de descarte diz se o escopo está bom.** Acima de metade, os especialistas estão largos demais.
@@ -143,7 +143,7 @@ sensei/
 ├── commands/           # /sensei, /sensei-stats, /sensei-porque
 └── skills/sensei/
     ├── SKILL.md        # roteador: modo → alvo → regras → relatório
-    ├── review.md · sec.md · sql.md · docs.md · fundo.md · repo.md
+    ├── review.md · sec.md · sql.md · docs.md · espec.md · repo.md
     ├── review/{php,laravel,cobol,powershell,python,sql}.md
     ├── references/     # rubrica, sinais, contabilidade (sob demanda)
     └── scripts/        # sensei.mjs: collect | slice | record | stats | repo | why | doctor

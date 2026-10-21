@@ -1,4 +1,4 @@
-# fundo — revisão por especialistas, com verificação independente
+# espec — revisão por especialistas, com verificação independente
 
 Segunda opção de revisão, não a padrão. O `review` faz **uma passada** com auto-refutação; aqui são **vários especialistas em paralelo** e um **verificador independente** que tenta derrubar cada candidato.
 
@@ -21,7 +21,7 @@ A diferença que justifica o custo: na passada única, quem levanta a hipótese 
 
 Cada especialista e o verificador **releem o bundle**. Com 4 especialistas + 1 verificador, o contexto é ~5× o de uma passada única.
 
-**Diga isso ao usuário antes de rodar**, com o número do `collect` na mão: "o bundle tem 15k; o modo fundo vai custar ~75k de contexto. Sigo?" Em `risk=high` a resposta costuma ser sim; em diff trivial, não.
+**Diga isso ao usuário antes de rodar**, com o número do `collect` na mão: "o bundle tem 15k; o modo espec vai custar ~75k de contexto. Sigo?" Em `risk=high` a resposta costuma ser sim; em diff trivial, não.
 
 ## 1. Despachar os especialistas
 
@@ -57,7 +57,7 @@ O verificador **não acrescenta achado novo.** Se ele vir algo, registra à part
 
 - Deduplicar: o mesmo defeito achado por dois especialistas é **um** achado, com a melhor descrição dos dois
 - Ordenar S0 → S1 → S2; dentro do nível, por confiança
-- Cortar: no máximo **8**, igual à passada única. Modo fundo acha mais candidatos, não entrega mais ruído
+- Cortar: no máximo **8**, igual à passada única. Modo espec acha mais candidatos, não entrega mais ruído
 - Descartado **não aparece** no relatório. Se o usuário perguntar, a lista existe
 
 ## 4. Reportar e registrar
@@ -65,7 +65,7 @@ O verificador **não acrescenta achado novo.** Se ele vir algo, registra à part
 Abra com uma linha dizendo o que rodou:
 
 ```
-fundo · 4 especialistas + verificador · 11 candidatos → 6 confirmados, 2 rebaixados, 3 descartados
+espec · 4 especialistas + verificador · 11 candidatos → 6 confirmados, 2 rebaixados, 3 descartados
 ```
 
 Essa linha é o produto mais útil do modo: **a taxa de descarte diz se o escopo está bom.** Descarte acima de metade significa que os especialistas estão largos demais — estreite o escopo antes de culpar o modelo.

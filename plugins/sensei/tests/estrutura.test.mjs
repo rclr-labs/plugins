@@ -23,7 +23,7 @@ const linguagensNoDisco = fs.readdirSync(path.join(SKILL, "review"))
 const frontmatter = md.slice(0, md.indexOf("---", 4));
 
 test("os modos do disco sao os seis previstos", () => {
-  assert.deepEqual(modosNoDisco, ["docs", "fundo", "repo", "review", "sec", "sql"]);
+  assert.deepEqual(modosNoDisco, ["docs", "espec", "repo", "review", "sec", "sql"]);
 });
 
 test("todo modo do disco esta na tabela do roteador", () => {

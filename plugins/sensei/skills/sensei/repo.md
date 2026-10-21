@@ -51,7 +51,7 @@ Para linguagem **sem camada** com volume relevante, a recomendação tem duas pa
 
 Os arquivos mais tocados são onde a revisão rende mais — e onde o defeito recorrente mora. Cruze com o risco:
 
-- **Hotspot de risco alto** (auth, pagamento, migration, fila) → candidato a `/sensei fundo` por padrão, e a teste antes de qualquer refatoração
+- **Hotspot de risco alto** (auth, pagamento, migration, fila) → candidato a `/sensei espec` por padrão, e a teste antes de qualquer refatoração
 - **Hotspot de risco normal com muitos toques** → candidato a decomposição: arquivo que muda toda semana costuma estar fazendo coisas demais
 - **Superfície sensível sem teste** → é a recomendação de maior retorno do plano, e quase nunca é a que o time pede
 

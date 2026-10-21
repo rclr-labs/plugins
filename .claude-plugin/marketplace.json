@@ -35,7 +35,7 @@
     {
       "name": "sensei",
       "source": "./plugins/sensei",
-      "description": "Revisao tecnica roteada por modo: review (codigo, com camada por linguagem - PHP, Laravel, COBOL, PowerShell, Python, SQL), sec (seguranca), sql (consultas), docs (documentacao), fundo (especialistas em paralelo com verificacao independente) e repo (analisa o repositorio e recomenda ao time por onde comecar). Revisa o diff, nao o repositorio, e mede a conta de tokens de cada revisao."
+      "description": "Revisao tecnica roteada por modo: review (codigo, com camada por linguagem - PHP, Laravel, COBOL, PowerShell, Python, SQL), sec (seguranca), sql (consultas), docs (documentacao), espec (especialistas em paralelo com verificacao independente) e repo (analisa o repositorio e recomenda ao time por onde comecar). Revisa o diff, nao o repositorio, e mede a conta de tokens de cada revisao."
     }
   ]
 }

@@ -64,7 +64,7 @@ export function actualFromArgs(args) {
   const slices = args.sliceTokens || 0;
   const tool = M.toolTokens;
   const prompt = M.promptTokens;
-  // Modo fundo: cada especialista e o verificador releem o bundle. O custo extra
+  // Modo espec: cada especialista e o verificador releem o bundle. O custo extra
   // sao as passadas ALEM da primeira, que ja esta contada em diff+signals+orient.
   const passes = Math.max(1, Number(args.agents) || 1);
   const fanout = (passes - 1) * (diff + signals + orient);
