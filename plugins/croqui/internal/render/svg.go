@@ -30,22 +30,42 @@ const (
 // construtor com bug, burlaria isso em silencio -- e aqui o resultado seria
 // injecao de <script> dentro do SVG. Escapar e barato; descobrir depois nao.
 func SVG(c *modelo.Croqui) string {
-	cols := [][]string{
-		rotulosRota(c),
-		rotulosControlador(c),
-		classesDeEntidade(c),
-		tabelasDeEntidade(c),
+	// So entram colunas COM conteudo. Cabecalho de coluna vazia le como bug
+	// de renderizacao, nao como "nao ha relacao derivada" -- visto olhando o
+	// .html de um repo real que nao liga rota a controlador por convencao.
+	type coluna struct {
+		titulo string
+		itens  []string
 	}
-
+	candidatas := []coluna{
+		{"rota", rotulosRota(c)},
+		{"controlador", rotulosControlador(c)},
+		{"entidade", classesDeEntidade(c)},
+		{"tabela", tabelasDeEntidade(c)},
+	}
+	var titulos []string
+	var cols [][]string
 	maxLin := 0
-	for _, cl := range cols {
-		if len(cl) > maxLin {
-			maxLin = len(cl)
+	for _, cd := range candidatas {
+		if len(cd.itens) == 0 {
+			continue
+		}
+		titulos = append(titulos, cd.titulo)
+		cols = append(cols, cd.itens)
+		if len(cd.itens) > maxLin {
+			maxLin = len(cd.itens)
 		}
 	}
+
 	if maxLin == 0 {
-		return `<svg role="img" aria-label="grafo vazio" width="320" height="60">` +
-			`<text x="10" y="34" class="vazio">nenhuma aresta derivada</text></svg>`
+		return `<svg role="img" aria-label="grafo vazio" width="420" height="60">` +
+			`<text x="10" y="34" class="vazio">nenhuma relacao derivada neste repositorio</text></svg>`
+	}
+	// Uma coluna so nao e grafo: e uma lista, e a tabela de rotas ja a tem.
+	if len(cols) < 2 {
+		return `<svg role="img" aria-label="grafo sem relacao" width="660" height="60">` +
+			`<text x="10" y="34" class="vazio">sem relacao derivada: este repositorio nao liga ` +
+			html.EscapeString(titulos[0]) + ` a outra camada por convencao</text></svg>`
 	}
 
 	w := margem*2 + len(cols)*colLargura + (len(cols)-1)*colGap
@@ -54,7 +74,6 @@ func SVG(c *modelo.Croqui) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, `<svg role="img" aria-label="grafo da aplicacao" width="%d" height="%d" viewBox="0 0 %d %d">`, w, h, w, h)
 
-	titulos := []string{"rota", "controlador", "entidade", "tabela"}
 	for ci, cl := range cols {
 		x := margem + ci*(colLargura+colGap)
 		fmt.Fprintf(&b, `<text x="%d" y="%d" class="col">%s</text>`, x, margem+12, html.EscapeString(titulos[ci]))
@@ -77,11 +96,17 @@ func SVG(c *modelo.Croqui) string {
 
 func rotulosRota(c *modelo.Croqui) []string {
 	var out []string
-	for i, r := range c.Rotas {
-		if i >= maxLinhas {
+	vistas := map[string]bool{}
+	for _, r := range c.Rotas {
+		rot := fmt.Sprintf("%s %s", r.Verbo, r.Caminho)
+		if vistas[rot] {
+			continue
+		}
+		vistas[rot] = true
+		if len(out) >= maxLinhas {
 			break
 		}
-		out = append(out, fmt.Sprintf("%s %s", r.Verbo, r.Caminho))
+		out = append(out, rot)
 	}
 	return out
 }

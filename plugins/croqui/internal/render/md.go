@@ -113,7 +113,14 @@ func secoes(c *modelo.Croqui, n int) string {
 			b.WriteString("Nenhuma rota declarada encontrada.\n")
 		} else {
 			b.WriteString("| Verbo | Caminho | Controlador | Método |\n|---|---|---|---|\n")
+			// Rota identica repetida e ruido: tres entradas iguais dizem a
+			// mesma coisa uma vez. Verbo+caminho diferentes seguem separados.
+			vistas := map[modelo.RotaDecl]bool{}
 			for _, r := range c.Rotas {
+				if vistas[r] {
+					continue
+				}
+				vistas[r] = true
 				fmt.Fprintf(&b, "| %s | `%s` | `%s` | `%s` |\n", r.Verbo, r.Caminho, r.Controlador, r.Metodo)
 			}
 		}

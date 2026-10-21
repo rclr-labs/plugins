@@ -126,3 +126,57 @@ func TestSVGEscapaRotuloForcadoPorCast(t *testing.T) {
 		t.Error("o rotulo deveria aparecer escapado dentro do SVG")
 	}
 }
+
+// Visto olhando o .html renderizado de um repo real: o grafo desenhava
+// quatro cabecalhos de coluna e tres ficavam vazias, porque o repo nao liga
+// rota a controlador por convencao. O dado estava honesto, mas cabecalho sem
+// conteudo embaixo le como bug, nao como "nao ha relacao derivada". E uma
+// coluna so, sem nenhuma aresta, nao e um grafo.
+func TestGrafoSemRelacaoDizIssoEmVezDeDesenharColunaVazia(t *testing.T) {
+	c := croquiExemplo()
+	c.Entidades = nil
+	c.Controladores = nil
+	c.Arestas = nil
+	c.Rotas = []modelo.RotaDecl{{Verbo: "GET", Caminho: "/a"}, {Verbo: "GET", Caminho: "/b"}}
+
+	s := render.SVG(c)
+	for _, vazia := range []string{"controlador", "entidade", "tabela"} {
+		if strings.Contains(s, ">"+vazia+"<") {
+			t.Errorf("coluna %q desenhada sem nenhum item embaixo", vazia)
+		}
+	}
+	if !strings.Contains(s, "sem relac") {
+		t.Errorf("grafo de uma coluna so tem que dizer que nao ha relacao derivada: %s", s)
+	}
+}
+
+func TestGrafoComRelacaoDesenhaAsColunasQueTemConteudo(t *testing.T) {
+	s := render.SVG(croquiExemplo()) // tem rota, controlador, entidade e tabela
+	for _, col := range []string{"rota", "controlador", "entidade", "tabela"} {
+		if !strings.Contains(s, ">"+col+"<") {
+			t.Errorf("coluna %q com conteudo nao foi desenhada", col)
+		}
+	}
+}
+
+// /orders repetido tres vezes no mesmo pacote e ruido: tres entradas
+// identicas dizem a mesma coisa uma vez.
+func TestRotaIdenticaNaoSeRepeteNaTabela(t *testing.T) {
+	c := croquiExemplo()
+	c.Rotas = []modelo.RotaDecl{
+		{Verbo: "GET", Caminho: "/orders"},
+		{Verbo: "GET", Caminho: "/orders"},
+		{Verbo: "GET", Caminho: "/orders"},
+		{Verbo: "POST", Caminho: "/orders"},
+	}
+	s, err := render.MD(c, opcoes(2))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n := strings.Count(s, "| GET | `/orders` |"); n != 1 {
+		t.Errorf("GET /orders aparece %d vezes, queria 1", n)
+	}
+	if !strings.Contains(s, "| POST | `/orders` |") {
+		t.Error("POST /orders e rota diferente e tem que aparecer")
+	}
+}
