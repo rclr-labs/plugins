@@ -31,6 +31,11 @@
       "name": "plano-mcp",
       "source": "./plugins/plano-mcp",
       "description": "Avalia um repositorio existente e planeja a implementacao de um servidor MCP sobre ele: inventario deterministico, veredito de prontidao em 6 eixos com evidencia, contrato das ferramentas de leitura e plano de issues em fatias verticais. Planeja, nao implementa."
+    },
+    {
+      "name": "sensei",
+      "source": "./plugins/sensei",
+      "description": "Revisao tecnica roteada por modo: review (codigo, com camada por linguagem - PHP, Laravel, COBOL, PowerShell, Python, SQL), sec (seguranca), sql (consultas), docs (documentacao), fundo (especialistas em paralelo com verificacao independente) e repo (analisa o repositorio e recomenda ao time por onde comecar). Revisa o diff, nao o repositorio, e mede a conta de tokens de cada revisao."
     }
   ]
 }

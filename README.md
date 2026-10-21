@@ -147,6 +147,31 @@ assistente"*, *"faz um plano de issues pra implementar MCP"*.
 
 Comandos: `/plano-mcp` · `/mcp-prontidao` (só o veredito) · `/mcp-issues` (valida e emite).
 
+### sensei
+
+Revisão técnica **roteada por modo**: o `SKILL.md` decide o modo e carrega **um** arquivo de regras, então o custo de contexto fica proporcional ao que você pediu.
+
+| Modo | Para quê |
+|---|---|
+| `review` | Código — regras gerais **+** camada da linguagem |
+| `sec` | Segurança: só entra achado com caminho de ataque |
+| `sql` | Consulta: semântica de `NULL`, cardinalidade de `JOIN`, SARGability, mutação |
+| `docs` | Documentação: verdade, fonte, acionabilidade |
+| `fundo` | Especialistas em paralelo **+** verificador independente |
+| `repo` | Analisa o repositório e recomenda ao time por onde começar |
+
+Sem argumento, infere o modo pelo contexto; sem contexto claro, **pergunta** — não escolhe sozinho.
+
+**Revisa o diff, não o repositório.** Para diff (`--staged`, `A..B`, `--pr N`, "o que mudou"), um script monta o pacote: hunks com contexto, ~35 padrões de risco por regex **só nas linhas adicionadas**, contagem de chamadores e testes relacionados. O modelo lê o pacote **uma vez**. E cada revisão registra a própria conta de tokens — inclusive quando ela dá **negativa**, que é o que acontece em diff pequeno.
+
+**Camada por linguagem.** `review.md` vale sempre; quando existe `review/<linguagem>.md`, ele entra por cima e **vence em conflito**. Em PHP são três camadas: geral → `php` → `laravel`. As camadas são específicas de verdade — truncamento de alta ordem no `MOVE` e `PERFORM THRU` com parágrafo novo em COBOL; `try/catch` que não pega erro não-terminante e `-eq` sobre array em PowerShell; N+1 escondido no Blade, `$guarded = []` e `env()` fora de `config` em Laravel. Cada arquivo termina com uma seção **Padrões da equipe**, vazia de propósito: é onde entram as regras da casa, e elas vencem as genéricas.
+
+**O modo `fundo`** resolve a fraqueza da passada única — nela, quem levanta a hipótese é quem a refuta, e o mesmo modelo está enviesado a confirmar. Aqui um verificador independente recebe os candidatos **sem o raciocínio** de quem os propôs, com a tarefa de derrubá-los. O custo (~5× o bundle) aparece na conta, na linha `fanout_especialistas`.
+
+Dispara com *"revise esse diff"*, *"code review do que mudou"*, *"revise a segurança disso"*, *"analise nosso repo"*, *"por onde começamos"*.
+
+Comandos: `/sensei <modo>` · `/sensei-stats` · `/sensei-porque`. CLI: `sensei collect | slice | record | stats | repo | why | doctor`.
+
 ## Licença
 
 Uso livre pelos clientes e parceiros da RCLR Labs.
