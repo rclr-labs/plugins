@@ -21,6 +21,18 @@ S3 não existe neste protocolo: se não muda comportamento de forma relevante, n
 
 Se qualquer resposta for vaga, descarte ou rebaixe para S2 com confiança média.
 
+### As três saídas da refutação
+
+Guarda encontrada **não** significa achado descartado. Decida assim:
+
+| O que você encontrou | Desfecho |
+|---|---|
+| Guarda que torna o **gatilho inalcançável neste caminho** — validação antes da linha perigosa, no mesmo fluxo, cobrindo o caso | **Descarta** em silêncio. O defeito não existe |
+| Guarda **parcial ou removível**: outro ponto de entrada que não passa por ela; teste no lugar de validação de runtime; convenção em vez de enforcement; defesa a montante de um padrão que continua perigoso (SQL concatenado "protegido" por validação) | **Rebaixa para S2**, com a dependência declarada. A proteção está a um refactor de sumir |
+| Guarda **suposta, não vista** — você não a encontrou no bundle nem no slice | **Não descarta.** Reporta com confiança média e declara a suposição |
+
+O erro que esta tabela evita é o falso negativo educado: ver qualquer guarda em qualquer lugar e ficar quieto.
+
 ## Confiança
 
 - **alta**: viu o caminho completo no bundle/slice; sem suposição sobre código não lido.

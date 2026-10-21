@@ -82,7 +82,7 @@ export function L(lang) {
       report_compression: pt ? "relatório compacto (1–2 linhas/achado)" : "compact report (1–2 lines/finding)",
       extra_reads: pt ? "leituras extras durante a revisão" : "extra reads during review",
       protocol_overhead: pt ? "protocolo (SKILL.md + chamadas)" : "protocol (SKILL.md + calls)",
-      fanout_especialistas: pt ? "fan-out do modo fundo (releitura por especialista)" : "deep-mode fan-out (bundle re-read per specialist)",
+      fanout_especialistas: pt ? "fan-out do modo espec (releitura por especialista)" : "specialist fan-out (bundle re-read per specialist)",
     },
   };
 }

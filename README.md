@@ -157,7 +157,7 @@ Revisão técnica **roteada por modo**: o `SKILL.md` decide o modo e carrega **u
 | `sec` | Segurança: só entra achado com caminho de ataque |
 | `sql` | Consulta: semântica de `NULL`, cardinalidade de `JOIN`, SARGability, mutação |
 | `docs` | Documentação: verdade, fonte, acionabilidade |
-| `fundo` | Especialistas em paralelo **+** verificador independente |
+| `espec` | Especialistas em paralelo **+** verificador independente |
 | `repo` | Analisa o repositório e recomenda ao time por onde começar |
 
 Sem argumento, infere o modo pelo contexto; sem contexto claro, **pergunta** — não escolhe sozinho.
@@ -166,7 +166,7 @@ Sem argumento, infere o modo pelo contexto; sem contexto claro, **pergunta** —
 
 **Camada por linguagem.** `review.md` vale sempre; quando existe `review/<linguagem>.md`, ele entra por cima e **vence em conflito**. Em PHP são três camadas: geral → `php` → `laravel`. As camadas são específicas de verdade — truncamento de alta ordem no `MOVE` e `PERFORM THRU` com parágrafo novo em COBOL; `try/catch` que não pega erro não-terminante e `-eq` sobre array em PowerShell; N+1 escondido no Blade, `$guarded = []` e `env()` fora de `config` em Laravel. Cada arquivo termina com uma seção **Padrões da equipe**, vazia de propósito: é onde entram as regras da casa, e elas vencem as genéricas.
 
-**O modo `fundo`** resolve a fraqueza da passada única — nela, quem levanta a hipótese é quem a refuta, e o mesmo modelo está enviesado a confirmar. Aqui um verificador independente recebe os candidatos **sem o raciocínio** de quem os propôs, com a tarefa de derrubá-los. O custo (~5× o bundle) aparece na conta, na linha `fanout_especialistas`.
+**O modo `espec`** resolve a fraqueza da passada única — nela, quem levanta a hipótese é quem a refuta, e o mesmo modelo está enviesado a confirmar. Aqui um verificador independente recebe os candidatos **sem o raciocínio** de quem os propôs, com a tarefa de derrubá-los. O custo (~5× o bundle) aparece na conta, na linha `fanout_especialistas`.
 
 Dispara com *"revise esse diff"*, *"code review do que mudou"*, *"revise a segurança disso"*, *"analise nosso repo"*, *"por onde começamos"*.
 

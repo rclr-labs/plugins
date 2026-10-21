@@ -36,7 +36,7 @@ O baseline é **conservador de propósito**: não inclui 2 hops de dependência,
 | `slices` | contexto extra via `sensei slice`, somado do log do run |
 | `tool` | 140 tok fixos (resumo do collect + recibo do record) |
 | `prompt` | 80 tok |
-| `fanout` | `(--agents - 1) × (diff + signals + orient)` — zero fora do modo `fundo` |
+| `fanout` | `(--agents - 1) × (diff + signals + orient)` — zero fora do modo `espec` |
 
 `actual.total = diff + signals + orient + report + skill + reads + slices + tool + prompt + fanout`
 
@@ -51,7 +51,7 @@ O baseline é **conservador de propósito**: não inclui 2 hops de dependência,
 - `report_compression = report_baseline - report_real` (relatório compacto)
 - `extra_reads = -(reads + slices)` (custo de contexto extra)
 - `protocol_overhead = -(skill + tool)` (custo do protocolo)
-- `fanout_especialistas = -(passadas - 1) × (diff + signals + orient)` (modo `fundo`: cada especialista e o verificador releem o bundle)
+- `fanout_especialistas = -(passadas - 1) × (diff + signals + orient)` (modo `espec`: cada especialista e o verificador releem o bundle)
 
 A soma dos oito é exatamente `saved`; o `record` falha se não fechar (`atribuicao inconsistente`).
 
@@ -65,9 +65,9 @@ A soma dos oito é exatamente `saved`; o `record` falha se não fechar (`atribui
 
 Custos que entram contra: o SKILL.md (~0.8k), as saídas do CLI e qualquer leitura extra. Em diffs minúsculos a economia pode ser zero ou negativa — o `stats` mostra isso sem esconder.
 
-## O preço do modo `fundo`
+## O preço do modo `espec`
 
-O modo `fundo` despacha um especialista por dimensão e um verificador independente. Cada um **relê o bundle**, então o custo de contexto é aproximadamente `passadas × bundle`, não `bundle`.
+O modo `espec` despacha um especialista por dimensão e um verificador independente. Cada um **relê o bundle**, então o custo de contexto é aproximadamente `passadas × bundle`, não `bundle`.
 
 Com 4 especialistas + 1 verificador sobre um bundle de 15k, o real medido passa de ~16k para ~75k: a economia vira **−400%** e o `stats` mostra isso na linha `fanout_especialistas`. Não é defeito de medição — é o preço da arquitetura, e ele precisa aparecer para que a decisão de usá-la seja consciente.
 

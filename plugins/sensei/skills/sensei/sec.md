@@ -1,6 +1,6 @@
 # sec — revisão de segurança
 
-Modo para quando a pergunta é "isto é explorável?". Mais estreito e mais fundo que o `review`: aqui **só entra achado com caminho de ataque**, não boa prática.
+Modo para quando a pergunta é "isto é explorável?". Mais estreito e mais profundo que o `review`: aqui **só entra achado com caminho de ataque**, não boa prática.
 
 ## A pergunta que separa achado de teatro
 
