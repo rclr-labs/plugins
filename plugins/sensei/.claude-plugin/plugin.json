@@ -1,0 +1,22 @@
+{
+  "name": "sensei",
+  "version": "0.1.0",
+  "description": "Revisao tecnica roteada por modo: review (codigo, com camada por linguagem - PHP, Laravel, COBOL, PowerShell, Python, SQL), sec (seguranca), sql (consultas) e docs (documentacao). O roteador le apenas o arquivo do modo escolhido; acrescentar modo ou linguagem e criar um arquivo e uma linha.",
+  "author": {
+    "name": "RCLR Labs"
+  },
+  "homepage": "https://github.com/rclr-labs/plugins",
+  "repository": "https://github.com/rclr-labs/plugins",
+  "license": "MIT",
+  "keywords": [
+    "code-review",
+    "security-review",
+    "sql-review",
+    "php",
+    "laravel",
+    "cobol",
+    "powershell",
+    "claude-code",
+    "agent-skills"
+  ]
+}
