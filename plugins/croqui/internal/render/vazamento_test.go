@@ -87,13 +87,16 @@ func geraTodosOsFormatos(t *testing.T, dir string) map[string]string {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// A Task 8 acrescenta "html": render.HTML(c, o)
-	return map[string]string{"md": md, "json": js}
+	ht, err := render.HTML(c, o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return map[string]string{"md": md, "json": js, "html": ht}
 }
 
 func TestNenhumSegredoPlantadoApareceEmFormatoAlgum(t *testing.T) {
 	saidas := geraTodosOsFormatos(t, repoComSegredoEmTodaParte(t))
-	if len(saidas) < 2 {
+	if len(saidas) < 3 {
 		t.Fatal("a tabela de formatos ficou incompleta")
 	}
 	for formato, texto := range saidas {
