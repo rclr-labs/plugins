@@ -83,6 +83,10 @@ Em Go não existe import dinâmico, então esse fechamento é completo e estáti
 
 `generico` ativa sempre e é honesto por construção: repositório fora das duas primeiras camadas tem mapa de **estrutura**, não de comportamento — e o pacote diz isso em vez de inventar rota.
 
+## Exemplo
+
+[`examples/caso-exemplo-001/`](examples/caso-exemplo-001) tem um repositório fictício e as três saídas geradas dele, para comparar com o que você gerou antes de rodar em código de cliente. Ele também é golden test de formato: `go test .` falha se a saída mudar sem o exemplo ser regenerado.
+
 ## Licença
 
 MIT.
