@@ -21,6 +21,19 @@ jobs:
         with:
           go-version: "1.24"
           cache: false
+      # Arquivo-fonte ignorado pelo .gitignore passa nos testes locais (existe
+      # em disco) e quebra o CI (nunca entrou no repo). Foi o que aconteceu
+      # com cmd/croqui/ajuda.go: o padrao solto `croqui`, pensado para o
+      # binario da raiz, casava tambem o diretorio cmd/croqui/.
+      - name: nenhum .go ignorado pelo gitignore
+        run: |
+          ignorados=$(git ls-files --others --ignored --exclude-standard -- '*.go')
+          if [ -n "$ignorados" ]; then
+            echo "arquivo .go ignorado pelo gitignore:" >&2
+            echo "$ignorados" >&2
+            exit 1
+          fi
+          echo "nenhum .go fora do repositorio"
       - run: gofmt -l . | tee /tmp/fmt && test ! -s /tmp/fmt
       - run: go vet ./...
       - run: go test ./... -count=1

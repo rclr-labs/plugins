@@ -1,2 +1,6 @@
-dist/
-croqui
+# Ancorado com barra inicial de proposito: o padrao solto `croqui` casaria
+# tambem o diretorio cmd/croqui/, e engoliria em silencio todo arquivo novo
+# criado la. Foi o que aconteceu com ajuda.go, que passou nos testes locais
+# e quebrou o CI por nunca ter entrado no repositorio.
+/dist/
+/croqui
