@@ -130,6 +130,86 @@ fi
 git reset -q ordinary.js
 rm -f ordinary.js
 
+# Case 11: REMOVER uma linha que casa um padrão é permitido. O propósito do
+# scanner é impedir segredo de ENTRAR; ele aplicava os padrões ao diff inteiro,
+# linhas `-` incluídas, e por isso bloqueava tirar conteúdo do repositório. O
+# caso que isso quebra de pior não é higiene: é alguém tentando REMOVER um
+# segredo commitado por engano — exatamente a correção que tem de ser fácil.
+# Achado de verdade: destrastrear node_modules, cujo código de parsing de PEM
+# (no `jose` e no driver do `mongodb`) carrega o cabeçalho de chave privada
+# como string, para comparar prefixo e montar envelope.
+#
+# As iscas destes casos são MONTADAS em partes, nunca escritas como literal: um
+# literal aqui casaria os próprios padrões e o scanner bloquearia o commit
+# deste arquivo de teste. Os casos 2, 8 e 9 acima são mais antigos que o hook e
+# carregam literais; não vale reescrevê-los sem motivo, mas caso novo monta.
+pem_abre='-----BEGIN'
+pem_fecha='PRIVATE KEY-----'
+aws_falsa="AKIA$(printf 'A%.0s' $(seq 16))"
+aws_outra="AKIA$(printf 'Z%.0s' $(seq 16))"
+
+printf 'const header = "%s %s"\n' "$pem_abre" "$pem_fecha" > pem.js
+git add pem.js
+git commit -qm "baseline: arquivo com texto de PEM já no histórico"
+git rm -q pem.js
+if ! "$scan"; then
+  echo "FAIL: remover uma linha com padrão de chave privada foi bloqueado" >&2
+  exit 1
+fi
+git reset -q
+git checkout -q -- pem.js
+
+# Case 12: ADICIONAR a mesma linha continua bloqueado. Sem este caso, o
+# Case 11 passaria com o scanner inteiro desligado — a recusa precisa de prova
+# positiva, não só a permissão.
+printf 'const k = "%s %s"\n' "$pem_abre" "$pem_fecha" > pem-novo.js
+git add pem-novo.js
+if "$scan"; then
+  echo "FAIL: adicionar uma linha com chave privada NÃO foi bloqueada" >&2
+  exit 1
+fi
+git reset -q pem-novo.js
+rm -f pem-novo.js
+
+# Case 13: hunk misto — uma linha de segredo sai e outra, diferente, entra.
+# Tem de bloquear pela que ENTRA. É o caso que pega um filtro de adições
+# implementado grosso, que descartasse o hunk todo por conter remoção.
+printf '%s\n' "$aws_falsa" > misto.txt
+git add misto.txt
+git commit -qm "baseline misto"
+printf '%s\n' "$aws_outra" > misto.txt
+git add misto.txt
+if "$scan"; then
+  echo "FAIL: hunk que remove um segredo e adiciona outro NÃO foi bloqueado" >&2
+  exit 1
+fi
+git checkout -q HEAD -- misto.txt
+git reset -q
+
+# Case 14: a outra metade do mesmo defeito — a regra de NOME de arquivo também
+# olhava deleções, então remover um .env do repositório era bloqueado. Remover
+# um .env commitado por engano é a correção certa, e tem de passar.
+echo "SOME_VAR=1" > .env.paradeletar
+git add .env.paradeletar
+git commit -qm "baseline: .env no histórico"
+git rm -q .env.paradeletar
+if ! "$scan"; then
+  echo "FAIL: remover um arquivo .env do repositório foi bloqueado" >&2
+  exit 1
+fi
+git reset -q
+git checkout -q -- .env.paradeletar
+
+# Case 15: e adicionar um .env continua bloqueado depois da correção acima.
+echo "SOME_VAR=2" > .env.novo
+git add .env.novo
+if "$scan"; then
+  echo "FAIL: adicionar um arquivo .env NÃO foi bloqueado" >&2
+  exit 1
+fi
+git reset -q .env.novo
+rm -f .env.novo
+
 echo "PASS: secret-scan.sh"
 
 # Wrapper: non-commit command is always allowed, even with a staged secret

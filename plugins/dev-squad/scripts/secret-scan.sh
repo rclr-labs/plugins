@@ -51,8 +51,25 @@ has_commit_all_flag() {
   return 1
 }
 
+# Só as linhas ADICIONADAS entram no scan de conteúdo, e deleções de arquivo
+# ficam fora da regra de nome. Remoção não pode introduzir segredo, e aplicar
+# os padrões ao diff inteiro — linhas `-` incluídas — bloqueava tirar conteúdo
+# do repositório. O caso que isso quebrava de pior não era higiene de
+# node_modules: era REMOVER um segredo commitado por engano, que é a correção
+# que mais precisa ser fácil. Um hunk misto segue bloqueado pela linha que
+# entra, e o `+++` é descartado porque é cabeçalho de arquivo, não conteúdo.
+#
+# É `awk` com `substr`, e não `grep`, por um motivo medido: o `grep` desta
+# máquina é o ugrep, que REJEITA `^\+\+\+` em BRE como erro de sintaxe — e com
+# um `|| true` no fim do pipe isso virava diff vazio, ou seja "nada
+# suspeito". Fail-OPEN num controle de segurança, pior que o defeito original.
+# O awk não tem ambiguidade de BRE/ERE, não usa regex nenhuma aqui, e sai 0
+# com ou sem casamento, então não precisa de `|| true` para mascarar nada.
+apenas_adicoes() { awk 'substr($0,1,1)=="+" && substr($0,1,3)!="+++"'; }
+
 staged_diff="$(git diff --cached --unified=0 2>/dev/null || true)"
-staged_files="$(git diff --cached --name-only 2>/dev/null || true)"
+staged_diff="$(printf '%s' "$staged_diff" | apenas_adicoes)"
+staged_files="$(git diff --cached --name-only --diff-filter=d 2>/dev/null || true)"
 
 # `git commit -a`/`-am`/`--all` stages tracked-file modifications as part of
 # the commit itself, so when that flag is present we also need to scan the
@@ -61,7 +78,8 @@ unstaged_diff=""
 unstaged_files=""
 if has_commit_all_flag "$cmd"; then
   unstaged_diff="$(git diff --unified=0 2>/dev/null || true)"
-  unstaged_files="$(git diff --name-only 2>/dev/null || true)"
+  unstaged_diff="$(printf '%s' "$unstaged_diff" | apenas_adicoes)"
+  unstaged_files="$(git diff --name-only --diff-filter=d 2>/dev/null || true)"
 fi
 
 if [[ -z "$staged_diff" && -z "$staged_files" && -z "$unstaged_diff" && -z "$unstaged_files" ]]; then
