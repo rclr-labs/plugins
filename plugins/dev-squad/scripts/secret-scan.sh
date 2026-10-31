@@ -10,9 +10,24 @@ set -euo pipefail
 # because they can be matched unquoted with no false-positive risk; the generic
 # assignment pattern at the end still requires a quoted value, since an unquoted
 # `apiKey: someLongVariableName` is far more often a reference than a literal.
+
+# Os dois padrões que a regra de síntese trata de forma especial são nomeados
+# aqui e REFERENCIADOS na lista abaixo, nunca escritos duas vezes: a regra
+# compara o padrão que casou com estes valores, e uma cópia divergente faria a
+# comparação falhar em silêncio — a allowlist simplesmente pararia de valer,
+# sem erro na tela.
+#
+# PADRAO_ESTRUTURAL: o cabeçalho PEM, único item do conjunto que é string FIXA
+# e pública. Casá-lo não diz nada sobre entropia.
+# PADRAO_GENERICO: a atribuição genérica, que aceita qualquer valor citado de
+# 16+ caracteres depois de um nome tipo api_key — e por isso casa palavra em
+# inglês tanto quanto credencial.
+PADRAO_ESTRUTURAL='-----BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----'
+PADRAO_GENERICO='(api|secret|access|private)[_-]?(key|token)[[:space:]]*[:=][[:space:]]*["'"'"'`][A-Za-z0-9/+_=-]{16,}["'"'"'`]'
+
 PATTERNS=(
   'AKIA[0-9A-Z]{16}'                                  # AWS access key id
-  '-----BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----'
+  "$PADRAO_ESTRUTURAL"
   'sk-ant-[A-Za-z0-9_-]{20,}'                         # Anthropic
   'sk-(proj-)?[A-Za-z0-9]{32,}'                       # OpenAI
   'gh[pousr]_[A-Za-z0-9]{30,}'                        # GitHub PAT / OAuth / refresh
@@ -23,7 +38,7 @@ PATTERNS=(
   'xox[baprs]-[A-Za-z0-9-]{10,}'                      # Slack token
   'SG\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}'        # SendGrid
   'eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.'    # signed JWT
-  '(api|secret|access|private)[_-]?(key|token)[[:space:]]*[:=][[:space:]]*["'"'"'`][A-Za-z0-9/+_=-]{16,}["'"'"'`]'
+  "$PADRAO_GENERICO"
   '(password|passwd)[[:space:]]*[:=][[:space:]]*["'"'"'`][^"'"'"'`[:space:]]{12,}["'"'"'`]'
 )
 
@@ -102,12 +117,28 @@ fi
 # verificável; a entropia não era.
 MARCADORES_SINTETICOS='fixture|synthetic|placeholder|dummy|redacted|example|1234567890'
 
-# O cabeçalho PEM é o ÚNICO padrão deste conjunto que é uma string FIXA e
-# pública: casá-lo não diz nada sobre entropia, e código legítimo o carrega
-# como literal (parser que compara prefixo, fixture de teste). Todos os outros
-# padrões descrevem a FORMA de uma credencial de alta entropia, e para esses
-# marcador solto na linha não prova nada sobre o valor.
-PADRAO_ESTRUTURAL='-----BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----'
+# Um valor tem forma de PALAVRA — palavras minúsculas, ou MAIÚSCULAS, unidas
+# por `-`/`_` — e não de credencial. Serve só ao PADRAO_GENERICO, onde "16+
+# caracteres citados" casa fixture de teste tanto quanto segredo.
+#
+# Fora desse escopo a prova não vale, e o caso que fixa isso é a senha: senha
+# de verdade É frase de palavras — é a forma recomendada — então ali "parece
+# palavra" não prova nada. É por isso que o padrão de password está fora.
+e_palavra() {
+  local v="$1"
+  [[ "$v" =~ ^[a-z]+([-_][a-z]+)+$ ]] && return 0
+  [[ "$v" =~ ^[A-Z]+([-_][A-Z]+)+$ ]] && return 0
+  return 1
+}
+
+# Extrai o valor citado de um casamento do PADRAO_GENERICO.
+#   api_key = "stale-capability"  ->  stale-capability
+valor_citado() {
+  local m="$1"
+  m="${m%[\"\'\`]}"     # tira a aspa final
+  m="${m##*[\"\'\`]}"   # tira tudo até a aspa de abertura
+  printf '%s' "$m"
+}
 
 # Decide se UMA linha que casou UM padrão é comprovadamente sintética.
 #   $1 = o padrão que casou (um elemento de PATTERNS)
@@ -150,6 +181,13 @@ e_sintetica() {
   #     contexto, não prova.
   if [[ "$padrao" == "$PADRAO_ESTRUTURAL" ]] \
      && grep -Eiq -- "$MARCADORES_SINTETICOS" <<<"$linha"; then
+    return 0
+  fi
+
+  # (c) o padrão que casou é a atribuição genérica e o valor citado tem forma
+  #     de palavra, não de credencial. Restrito a esse padrão — ver e_palavra.
+  if [[ "$padrao" == "$PADRAO_GENERICO" ]] \
+     && e_palavra "$(valor_citado "$casado")"; then
     return 0
   fi
 

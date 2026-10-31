@@ -291,6 +291,49 @@ fi
 git reset -q fixture-seq.ts
 rm -f fixture-seq.ts
 
+# Case 21: valor que é PALAVRA, não credencial, no padrão genérico de
+# atribuição. Esse padrão aceita qualquer valor citado de 16+ caracteres depois
+# de um nome tipo api_key, e por isso casa fixture de teste como
+# "stale-capability" e "selected-secret-canary" — 79 valores distintos no merge
+# do upstream do paperclip, nenhum deles com forma de credencial.
+for palavra in "api_key = \"stale-capability\"" \
+               "secret_token: 'selected-secret-canary'" \
+               "ACCESS_TOKEN=\"SENSITIVE_SENTINEL_VALUE\""; do
+  printf '%s\n' "$palavra" > palavra.txt
+  git add palavra.txt
+  if ! "$scan"; then
+    echo "FAIL: valor em forma de palavra foi bloqueado: $palavra" >&2
+    exit 1
+  fi
+  git reset -q palavra.txt
+done
+rm -f palavra.txt
+
+# Case 22: a prova de palavra NÃO vale para o padrão de senha. Senha de
+# verdade é frase de palavras — é a forma recomendada — então ali "parece
+# palavra" não é prova de nada. O Case 9 já cobre o bloqueio; este caso existe
+# para fixar o ESCOPO, que é o que torna a prova (d) defensável.
+printf 'password = "%s-%s-%s"\n' correct horse battery > senha.txt
+git add senha.txt
+if "$scan"; then
+  echo "FAIL: senha em forma de frase NAO foi bloqueada (prova (d) escapou do escopo)" >&2
+  exit 1
+fi
+git reset -q senha.txt
+rm -f senha.txt
+
+# Case 23: e no mesmo padrão genérico, valor com forma de credencial segue
+# barrado. Sem este caso o 21 passaria com a prova (d) aplicada a tudo.
+cred="$(printf '7Q2Xk9PL')$(printf 'z4MnB1vCr8Td')"
+printf 'api_key = "%s"\n' "$cred" > cred.txt
+git add cred.txt
+if "$scan"; then
+  echo "FAIL: valor com forma de credencial NAO foi bloqueado no padrao generico" >&2
+  exit 1
+fi
+git reset -q cred.txt
+rm -f cred.txt
+
 echo "PASS: secret-scan.sh"
 
 # Wrapper: non-commit command is always allowed, even with a staged secret
