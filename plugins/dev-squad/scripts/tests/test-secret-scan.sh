@@ -80,6 +80,12 @@ git checkout -q -- .env
 # Case 8: provider token prefixes are caught unquoted, in the shape they
 # actually appear in an env-style assignment (the original pattern set only
 # matched a quoted `api_key = "..."`, so every one of these slipped through).
+# A isca do Slack é MONTADA em partes, por dois motivos somados: um literal de
+# alta entropia aqui casaria o próprio padrão e o scanner — corretamente —
+# bloquearia o commit deste arquivo de teste; e ela não pode mais conter
+# `1234567890`, que passou a ser marcador de falsidade (ver MARCADORES_SINTETICOS
+# no scanner). Com o valor antigo este caso provaria o oposto do que afirma.
+slack_alta="xoxb-$(printf '7Q2Xk9PL')$(printf 'z4MnB1vC')"
 declare -a provider_secrets=(
   "ANTHROPIC_API_KEY=sk-ant-api03-AAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   "OPENAI_API_KEY=sk-proj-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -88,7 +94,7 @@ declare -a provider_secrets=(
   "GITLAB_TOKEN=glpat-AAAAAAAAAAAAAAAAAAAA"
   "GOOGLE_KEY=AIzaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   "STRIPE_KEY=sk_live_AAAAAAAAAAAAAAAAAAAA"
-  "SLACK_TOKEN=xoxb-1234567890-AAAAAAAAAAAA"
+  "SLACK_TOKEN=$slack_alta"
   "SENDGRID_KEY=SG.AAAAAAAAAAAAAAAAAAAA.BBBBBBBBBBBBBBBBBBBB"
 )
 for secret in "${provider_secrets[@]}"; do
@@ -209,6 +215,81 @@ if "$scan"; then
 fi
 git reset -q .env.novo
 rm -f .env.novo
+
+# Case 16: fixture SINTÉTICO de chave privada é permitido. O cabeçalho PEM é o
+# único padrão do conjunto que é uma string FIXA e pública — casá-lo não diz
+# nada sobre entropia, e código legítimo o carrega como literal: parser que
+# compara prefixo, e fixture de teste. Foi o que barrou o merge de 526 commits
+# do upstream do paperclip, cujos testes trazem
+# `const privateKey = "<cabeçalho>\nfixture\n<rodapé>"`.
+pem_fim='-----END'
+marca='fixture'
+printf 'const privateKey = "%s %s\\n%s\\n%s %s"\n' \
+  "$pem_abre" "$pem_fecha" "$marca" "$pem_fim" "$pem_fecha" > fixture-pem.ts
+git add fixture-pem.ts
+if ! "$scan"; then
+  echo "FAIL: PEM marcado como fixture sintético foi bloqueado" >&2
+  exit 1
+fi
+git reset -q fixture-pem.ts
+rm -f fixture-pem.ts
+
+# Case 17: o MESMO cabeçalho sem marcador de fixture continua bloqueado. Sem
+# este caso o 16 passaria com a regra de PEM inteiramente desligada.
+printf 'const privateKey = "%s %s\\nMIIEvQIBADANBgkqhkiG9w0BAQ\\n%s %s"\n' \
+  "$pem_abre" "$pem_fecha" "$pem_fim" "$pem_fecha" > real-pem.ts
+git add real-pem.ts
+if "$scan"; then
+  echo "FAIL: PEM sem marcador de fixture NÃO foi bloqueado" >&2
+  exit 1
+fi
+git reset -q real-pem.ts
+rm -f real-pem.ts
+
+# Case 18: marcador DENTRO do próprio texto casado é permitido, para qualquer
+# padrão. Um token real não pode conter a palavra "fixture" — então quando o
+# marcador está dentro do casamento, e não apenas na linha, a prova é do
+# próprio valor. É o caso dos `xoxb-fixture-token` dos testes do upstream.
+slack_fixture="xoxb-${marca}-token"
+printf 'const slackToken = "%s"\n' "$slack_fixture" > fixture-slack.ts
+git add fixture-slack.ts
+if ! "$scan"; then
+  echo "FAIL: token cujo proprio valor contem 'fixture' foi bloqueado" >&2
+  exit 1
+fi
+git reset -q fixture-slack.ts
+rm -f fixture-slack.ts
+
+# Case 19: o buraco que a allowlist NÃO pode abrir. Um segredo de alta entropia
+# com a palavra "example" ao lado continua bloqueado: comentário na linha não
+# prova nada sobre o valor, e vazamento real costuma vir acompanhado justamente
+# dessas palavras. A allowlist vale para o cabeçalho PEM (string fixa) e para
+# marcador dentro do casamento — nunca para marcador solto na linha.
+aws_real="AKIA$(printf 'B%.0s' $(seq 16))"
+printf '%s  # example key, replace me\n' "$aws_real" > quase.txt
+git add quase.txt
+if "$scan"; then
+  echo "FAIL: segredo de alta entropia com 'example' na linha NAO foi bloqueado" >&2
+  exit 1
+fi
+git reset -q quase.txt
+rm -f quase.txt
+
+# Case 20: o valor que o ENSAIO achou e que os 19 casos acima não pegavam —
+# fixture do upstream do paperclip cuja falsidade está na sequência canônica,
+# não numa palavra: `xoxb-` seguido de 1234567890 repetido três vezes, em
+# server/src/services/chat-question-forms.test.ts. A prova (a) cobre porque a
+# sequência está DENTRO do texto casado. Montado em partes só por simetria com
+# os vizinhos; aqui o literal passaria, já que contém o marcador.
+seq_falsa="$(printf '1234567890%.0s' 1 2 3)"
+printf 'initialText = "xoxb-%s"\n' "$seq_falsa" > fixture-seq.ts
+git add fixture-seq.ts
+if ! "$scan"; then
+  echo "FAIL: token com sequencia canonica de falsidade foi bloqueado" >&2
+  exit 1
+fi
+git reset -q fixture-seq.ts
+rm -f fixture-seq.ts
 
 echo "PASS: secret-scan.sh"
 

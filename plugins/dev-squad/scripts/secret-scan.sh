@@ -86,16 +86,108 @@ if [[ -z "$staged_diff" && -z "$staged_files" && -z "$unstaged_diff" && -z "$uns
   exit 0
 fi
 
-for pattern in "${PATTERNS[@]}"; do
-  if grep -Eiq -- "$pattern" <<<"$staged_diff"; then
-    echo "secret-scan: blocked commit — staged diff matches pattern: $pattern" >&2
+# Marcas que alguém escreve DE PROPÓSITO para dizer "este valor é falso".
+# Usadas apenas pela regra de síntese abaixo, nunca para afrouxar um padrão.
+#
+# `1234567890` entra como sequência canônica de falsidade, não como heurística
+# de entropia. A tentativa anterior foi exatamente essa — permitir valor de
+# baixa entropia (ciclo repetido, corrida sequencial) — e a medição derrubou a
+# ideia: 13 das 14 iscas que esta suíte usa para provar BLOQUEIO viravam
+# permitidas, porque toda isca honesta é sintética por construção — prefixo de
+# provedor seguido de um caractere repetido, ou de uma corrida alfabética. (As
+# iscas não são citadas aqui por extenso: um literal neste comentário casaria
+# os próprios padrões e bloquearia o commit deste arquivo. Já aconteceu.)
+# Uma regra que libera o fixture do upstream e junto quase toda a suíte não é
+# allowlist, é desligar o portão. A sequência literal é estreita e
+# verificável; a entropia não era.
+MARCADORES_SINTETICOS='fixture|synthetic|placeholder|dummy|redacted|example|1234567890'
+
+# O cabeçalho PEM é o ÚNICO padrão deste conjunto que é uma string FIXA e
+# pública: casá-lo não diz nada sobre entropia, e código legítimo o carrega
+# como literal (parser que compara prefixo, fixture de teste). Todos os outros
+# padrões descrevem a FORMA de uma credencial de alta entropia, e para esses
+# marcador solto na linha não prova nada sobre o valor.
+PADRAO_ESTRUTURAL='-----BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----'
+
+# Decide se UMA linha que casou UM padrão é comprovadamente sintética.
+#   $1 = o padrão que casou (um elemento de PATTERNS)
+#   $2 = a linha inteira do diff que casou (ainda com o '+' na frente)
+# Retorna 0 para PERMITIR esta linha, 1 para BLOQUEAR.
+#
+# Duas provas possíveis, e a diferença entre elas é o ponto todo:
+#   (a) o marcador está DENTRO do texto que casou — um token real não contém
+#       a palavra "fixture", então a prova vem do próprio valor. Vale para
+#       qualquer padrão.
+#   (b) o padrão que casou é o cabeçalho PEM (string fixa, não-secreta) e a
+#       linha carrega um marcador. Vale SÓ para esse padrão.
+# Qualquer outra situação bloqueia, inclusive segredo de alta entropia com
+# "example" num comentário ao lado.
+e_sintetica() {
+  local padrao="$1" linha="$2" casado rc
+  # Sem pipe de propósito: com `| head -n1` o `$?` passa a ser do head e o
+  # erro do grep desaparece. Aqui `$?` é do grep, e o primeiro casamento sai
+  # por expansão de parâmetro.
+  set +e
+  casado="$(grep -Eio -- "$padrao" <<<"$linha")"
+  rc=$?
+  set -e
+  if (( rc > 1 )); then
+    echo "secret-scan: blocked commit — grep -o failed (rc=$rc) on pattern: $padrao" >&2
     exit 2
   fi
-  if [[ -n "$unstaged_diff" ]] && grep -Eiq -- "$pattern" <<<"$unstaged_diff"; then
-    echo "secret-scan: blocked commit — unstaged diff (git commit -a/-am/--all) matches pattern: $pattern" >&2
-    exit 2
+  casado="${casado%%$'\n'*}"
+
+  # (a) o marcador está DENTRO do texto casado: a prova vem do próprio valor,
+  #     porque uma credencial real não carrega a palavra "fixture". Vale para
+  #     qualquer padrão.
+  if [[ -n "$casado" ]] && grep -Eiq -- "$MARCADORES_SINTETICOS" <<<"$casado"; then
+    return 0
   fi
-done
+
+  # (b) o padrão que casou é o cabeçalho PEM — string fixa e pública, cujo
+  #     casamento não diz nada sobre entropia — e a linha carrega um marcador.
+  #     Restrito a esse padrão: para os demais, marcador solto na linha é
+  #     contexto, não prova.
+  if [[ "$padrao" == "$PADRAO_ESTRUTURAL" ]] \
+     && grep -Eiq -- "$MARCADORES_SINTETICOS" <<<"$linha"; then
+    return 0
+  fi
+
+  return 1
+}
+
+# Varre um diff (só linhas adicionadas) contra todos os padrões.
+#   $1 = rótulo para a mensagem de erro, $2 = o diff
+# Sai 2 se algum casamento não for comprovadamente sintético.
+varre_diff() {
+  local rotulo="$1" diff="$2" pattern matches rc linha
+  [[ -z "$diff" ]] && return 0
+  for pattern in "${PATTERNS[@]}"; do
+    # Sem `|| true` no pipe: rc 1 é "não casou", mas rc > 1 é ERRO do grep, e
+    # mascarar isso já transformou este portão em fail-OPEN uma vez. Aqui erro
+    # de ferramenta bloqueia — fail-CLOSED, que é o único default aceitável
+    # num controle de segurança.
+    set +e
+    matches="$(grep -Ei -- "$pattern" <<<"$diff")"
+    rc=$?
+    set -e
+    if (( rc > 1 )); then
+      echo "secret-scan: blocked commit — grep failed (rc=$rc) on pattern: $pattern" >&2
+      exit 2
+    fi
+    (( rc == 1 )) && continue
+    while IFS= read -r linha; do
+      [[ -z "$linha" ]] && continue
+      if ! e_sintetica "$pattern" "$linha"; then
+        echo "secret-scan: blocked commit — $rotulo matches pattern: $pattern" >&2
+        exit 2
+      fi
+    done <<<"$matches"
+  done
+}
+
+varre_diff "staged diff" "$staged_diff"
+varre_diff "unstaged diff (git commit -a/-am/--all)" "$unstaged_diff"
 
 # Union staged and (when -a/--all is in play) unstaged tracked file names so
 # a tracked .env modified but never `git add`-ed still gets caught when it's
