@@ -172,6 +172,20 @@ Dispara com *"revise esse diff"*, *"code review do que mudou"*, *"revise a segur
 
 Comandos: `/sensei <modo>` · `/sensei-stats` · `/sensei-porque`. CLI: `sensei collect | slice | record | stats | repo | why | doctor`.
 
+### vibe-auditor
+
+Auditoria sênior de aplicações "vibe-coded" — geradas aceleradamente via LLM/prompt,
+que funcionam no caminho feliz mas costumam esconder falhas de arquitetura,
+segurança, resiliência, observabilidade e testes.
+
+Roda 4 fases — descoberta e mapeamento, auditoria dos 5 pilares críticos (arquitetura,
+segurança/AppSec, resiliência, observabilidade, testes), matriz de maturidade (1 a 5
+por pilar) e geração dos artefatos — e grava `VIBE_AUDIT_REPORT.md` (diagnóstico com
+evidência em `arquivo:linha`) e `REMEDIATION_BACKLOG.md` (backlog P0-P3, cada item com
+impacto, esforço e critério de aceite, pronto para execução no Claude Code).
+
+Dispara com *"audita esse app"*, *"faz um vibe audit aqui"*, ou `/vibe-audit [caminho]`.
+
 ## Licença
 
 Uso livre pelos clientes e parceiros da RCLR Labs.

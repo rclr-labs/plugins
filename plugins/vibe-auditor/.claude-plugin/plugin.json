@@ -1,0 +1,20 @@
+{
+  "name": "vibe-auditor",
+  "version": "0.1.0",
+  "description": "Auditoria senior de apps vibe-coded: arquitetura, seguranca (AppSec), resiliencia, observabilidade e testes, com matriz de maturidade por pilar. Gera VIBE_AUDIT_REPORT.md e REMEDIATION_BACKLOG.md com tarefas P0-P3 prontas para execucao no Claude Code.",
+  "author": {
+    "name": "RCLR Labs"
+  },
+  "homepage": "https://github.com/rclr-labs/plugins",
+  "repository": "https://github.com/rclr-labs/plugins",
+  "license": "MIT",
+  "keywords": [
+    "vibe-coding",
+    "code-audit",
+    "security-review",
+    "appsec",
+    "technical-debt",
+    "claude-code",
+    "agent-skills"
+  ]
+}

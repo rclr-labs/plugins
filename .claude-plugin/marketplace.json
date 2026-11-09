@@ -41,6 +41,11 @@
       "name": "croqui",
       "source": "./plugins/croqui",
       "description": "Mapeia um repositorio e gera um pacote colavel numa IA que nao tem acesso ao codigo. Deterministico, sem IA e sem rede: nao le .env nem credencial, e declara no proprio pacote o que contem e o que nao contem."
+    },
+    {
+      "name": "vibe-auditor",
+      "source": "./plugins/vibe-auditor",
+      "description": "Auditoria senior de apps vibe-coded: arquitetura, seguranca (AppSec), resiliencia, observabilidade e testes, com matriz de maturidade por pilar. Gera VIBE_AUDIT_REPORT.md e REMEDIATION_BACKLOG.md com tarefas P0-P3 prontas para execucao no Claude Code."
     }
   ]
 }
